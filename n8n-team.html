@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N8N DSC · Team</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;700;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0c10;--bg2:#111318;--bg3:#16181f;
+  --border:#23262f;--border2:#2e3140;
+  --c:#f0f2ff;--muted:#6c7293;
+  --green:#3dd68c;--blue:#4da6ff;--orange:#ff9f43;
+  --pink:#ff6b9d;--yellow:#ffe66d;--purple:#c77dff;
+  --red:#ff6b6b;--teal:#00d4aa;
+  --nb-bg:#13141a;--nb-border:#2a2d3a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--c);
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;line-height:1.6;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.4;
+}
+.wrap{position:relative;z-index:1;}
+
+/* NAV */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 40px;border-bottom:1px solid var(--border);
+  background:rgba(11,12,16,0.94);backdrop-filter:blur(14px);
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{font-family:'Fira Code',monospace;font-size:12px;color:var(--green);display:flex;align-items:center;gap:4px;}
+.nav-logo a{color:var(--muted);text-decoration:none;transition:color .2s;}
+.nav-logo a:hover{color:var(--green);}
+.nav-sep{color:var(--border2);margin:0 4px;}
+.nav-links{display:flex;gap:24px;font-family:'Fira Code',monospace;font-size:11px;}
+.nav-links a{color:var(--muted);text-decoration:none;transition:color .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--green);}
+.nav-stat{
+  font-family:'Fira Code',monospace;font-size:10px;
+  background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.2);
+  color:var(--green);padding:5px 14px;border-radius:3px;
+  display:flex;align-items:center;gap:6px;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:ldot 2s ease-in-out infinite;}
+@keyframes ldot{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* PAGE HERO */
+.page-hero{
+  padding:64px 40px 50px;position:relative;overflow:hidden;
+  border-bottom:1px solid var(--border);
+}
+.page-hero::before{
+  content:'';position:absolute;right:0;top:0;
+  width:50%;height:100%;
+  background:radial-gradient(ellipse at right center,rgba(61,214,140,.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+.container{max-width:1200px;margin:0 auto;}
+.breadcrumb{
+  font-family:'Fira Code',monospace;font-size:10px;color:var(--muted);
+  margin-bottom:22px;display:flex;align-items:center;gap:6px;
+}
+.breadcrumb a{color:var(--muted);text-decoration:none;}
+.breadcrumb a:hover{color:var(--green);}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:50px;align-items:center;}
+.eyebrow{
+  font-family:'Fira Code',monospace;font-size:10px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--green);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.eyebrow::before{content:'>>>';color:var(--muted);}
+.page-title{
+  font-family:'Instrument Serif',serif;font-size:clamp(2.4rem,4.5vw,4rem);
+  font-weight:400;line-height:1.1;margin-bottom:12px;
+}
+.page-title em{color:var(--green);font-style:italic;}
+.page-sub{font-family:'Fira Code',monospace;font-size:12px;color:var(--muted);max-width:500px;line-height:1.9;}
+
+/* TERMINAL CARD */
+.term-card{
+  background:var(--nb-bg);border:1px solid var(--nb-border);
+  border-radius:8px;font-family:'Fira Code',monospace;font-size:11.5px;
+  min-width:330px;box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+.tc-bar{
+  background:#1a1d26;padding:9px 14px;border-bottom:1px solid var(--nb-border);
+  display:flex;align-items:center;gap:7px;
+}
+.tc-dots{display:flex;gap:5px;}
+.tc-dots span{width:9px;height:9px;border-radius:50%;}
+.tc-title{font-size:10px;color:var(--muted);margin-left:6px;}
+.tc-body{padding:14px 16px;line-height:2.1;}
+.hl{display:flex;gap:8px;font-size:11px;}
+.hl .k{color:var(--muted);min-width:80px;flex-shrink:0;}
+.cb{width:7px;height:12px;background:var(--green);display:inline-block;animation:cb .9s step-end infinite;}
+@keyframes cb{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* FILTER + SORT BAR */
+.filterbar{
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:14px 40px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.fl{font-family:'Fira Code',monospace;font-size:10px;color:var(--muted);}
+.chips{display:flex;gap:7px;flex-wrap:wrap;}
+.chip{
+  font-family:'Fira Code',monospace;font-size:10px;
+  padding:5px 13px;border-radius:100px;
+  border:1px solid var(--border2);color:var(--muted);
+  cursor:pointer;transition:all .2s;background:transparent;
+}
+.chip.f-all.on{background:rgba(61,214,140,.1);border-color:rgba(61,214,140,.35);color:var(--green);}
+.chip.f-head.on{background:rgba(61,214,140,.1);border-color:rgba(61,214,140,.35);color:var(--green);}
+.chip.f-mgmt.on{background:rgba(77,166,255,.1);border-color:rgba(77,166,255,.3);color:var(--blue);}
+.chip.f-lead.on{background:rgba(255,159,67,.1);border-color:rgba(255,159,67,.3);color:var(--orange);}
+.chip.f-coord.on{background:rgba(199,125,255,.1);border-color:rgba(199,125,255,.3);color:var(--purple);}
+.chip:hover{border-color:var(--border2);color:var(--c);}
+
+/* MAIN */
+.main{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 180px);}
+
+/* SIDEBAR */
+.sidebar{
+  border-right:1px solid var(--border);background:var(--bg2);
+  padding:24px 18px;font-family:'Fira Code',monospace;font-size:11px;
+  position:sticky;top:65px;height:fit-content;
+}
+.sb-h{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.sb-h::before{content:'#';color:var(--border2);}
+.sb-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 8px;border-radius:4px;color:var(--muted);
+  cursor:pointer;transition:all .15s;margin-bottom:2px;
+}
+.sb-item:hover{background:rgba(255,255,255,.04);color:var(--c);}
+.sb-item.on{background:rgba(61,214,140,.08);color:var(--green);}
+.sb-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:7px;flex-shrink:0;}
+.sb-n{background:var(--bg);padding:1px 8px;border-radius:100px;font-size:9px;color:var(--muted);}
+.sb-sep{height:1px;background:var(--border);margin:16px 0;}
+.mini-stat{display:flex;justify-content:space-between;padding:4px 8px;font-size:10px;}
+.mini-stat .mk{color:var(--muted);}
+.mini-stat .mv{color:var(--c);}
+
+/* MEMBERS AREA */
+.area{padding:28px 32px;}
+.area-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.result-txt{font-family:'Fira Code',monospace;font-size:11px;color:var(--muted);}
+.result-txt b{color:var(--green);}
+
+/* GRID */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:20px;}
+
+/* ── MEMBER CARD ── */
+.mcard{
+  background:var(--nb-bg);border:1px solid var(--nb-border);
+  border-radius:10px;overflow:hidden;font-family:'Fira Code',monospace;
+  font-size:12px;transition:border-color .25s,transform .25s,box-shadow .25s;
+  cursor:default;position:relative;
+}
+.mcard:hover{border-color:rgba(61,214,140,.3);transform:translateY(-4px);box-shadow:0 24px 70px rgba(0,0,0,.55);}
+.mcard:hover .cglow{opacity:1;}
+.cglow{
+  position:absolute;inset:0;pointer-events:none;
+  opacity:0;transition:opacity .35s;
+  background:radial-gradient(ellipse at 50% 0%,rgba(61,214,140,.05) 0%,transparent 55%);
+}
+
+/* stripe */
+.cstripe{height:2.5px;width:100%;}
+
+/* HEAD */
+.chead{padding:16px 18px 13px;display:flex;align-items:flex-start;gap:14px;border-bottom:1px solid var(--nb-border);}
+.avatar{
+  width:54px;height:54px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Instrument Serif',serif;font-size:22px;
+  position:relative;
+}
+.avatar-border{position:absolute;inset:-2px;border-radius:12px;border:1.5px solid transparent;}
+.minfo{flex:1;min-width:0;}
+.mname{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:var(--c);margin-bottom:2px;}
+.mhandle{color:var(--muted);font-size:10px;margin-bottom:7px;}
+.mhandle span{color:var(--blue);}
+.rbadge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:9px;font-weight:700;letter-spacing:.5px;
+  padding:3px 10px;border-radius:3px;text-transform:uppercase;
+}
+
+/* TABS */
+.ctabs{display:flex;border-bottom:1px solid var(--nb-border);}
+.ctab{
+  flex:1;padding:8px 0;text-align:center;font-size:9.5px;
+  color:var(--muted);border-bottom:2px solid transparent;
+  cursor:pointer;transition:all .15s;letter-spacing:.5px;
+}
+.ctab.on{color:var(--c);border-bottom-color:var(--green);}
+.ctab:hover:not(.on){color:var(--border2);border-bottom-color:var(--border2);}
+
+/* BODY */
+.cbody{padding:14px 18px;min-height:160px;}
+
+/* model card rows */
+.mrow{display:flex;align-items:flex-start;justify-content:space-between;padding:4.5px 0;border-bottom:1px solid rgba(35,38,47,.4);font-size:10.5px;gap:10px;}
+.mrow:last-child{border-bottom:none;}
+.mk{color:var(--muted);flex-shrink:0;}
+.mv{color:var(--c);text-align:right;}
+.mv.g{color:var(--green);}
+.mv.b{color:var(--blue);}
+.mv.o{color:var(--orange);}
+.mv.p{color:var(--purple);}
+.mv.t{color:var(--teal);}
+
+/* tags */
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+.tag{font-size:9px;padding:2px 8px;border-radius:100px;}
+.t-py{background:rgba(77,166,255,.1);color:var(--blue);border:1px solid rgba(77,166,255,.2);}
+.t-ml{background:rgba(61,214,140,.08);color:var(--green);border:1px solid rgba(61,214,140,.18);}
+.t-dl{background:rgba(199,125,255,.1);color:var(--purple);border:1px solid rgba(199,125,255,.2);}
+.t-da{background:rgba(255,159,67,.08);color:var(--orange);border:1px solid rgba(255,159,67,.18);}
+.t-nlp{background:rgba(0,212,170,.08);color:var(--teal);border:1px solid rgba(0,212,170,.2);}
+.t-viz{background:rgba(255,107,157,.08);color:var(--pink);border:1px solid rgba(255,107,157,.2);}
+.t-sql{background:rgba(255,230,109,.08);color:var(--yellow);border:1px solid rgba(255,230,109,.2);}
+.t-stat{background:rgba(255,107,107,.08);color:var(--red);border:1px solid rgba(255,107,107,.2);}
+
+/* skill bars */
+.srow{margin-bottom:10px;}
+.srow:last-child{margin-bottom:0;}
+.shead{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;}
+.sname{color:var(--muted);}
+.sscore{color:var(--c);}
+.strack{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.sfill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.sfill.init{width:0!important;}
+
+/* heatmap */
+.heatmap{display:grid;grid-template-columns:repeat(26,1fr);gap:2px;margin-top:6px;}
+.hc{aspect-ratio:1;border-radius:1.5px;background:var(--border);}
+.hc.l1{background:rgba(61,214,140,.18);}
+.hc.l2{background:rgba(61,214,140,.4);}
+.hc.l3{background:rgba(61,214,140,.68);}
+.hc.l4{background:rgba(61,214,140,.95);}
+.hm-lbl{font-size:9px;color:var(--muted);margin-top:5px;display:flex;justify-content:space-between;}
+
+/* bio tab */
+.bio-txt{font-size:11.5px;color:var(--muted);line-height:1.85;font-family:'DM Sans',sans-serif;}
+.bio-quote{
+  border-left:2px solid var(--green);padding-left:12px;
+  margin-bottom:12px;font-style:italic;color:var(--c);font-size:11px;
+  font-family:'Instrument Serif',serif;font-size:14px;
+}
+
+/* FOOT */
+.cfoot{
+  padding:10px 18px;border-top:1px solid var(--nb-border);
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.015);
+}
+.fstat{display:flex;align-items:center;gap:4px;font-size:9.5px;color:var(--muted);}
+.fstat b{color:var(--c);}
+.fdiscord{
+  margin-left:auto;background:rgba(88,101,242,.13);
+  color:#7289da;border:1px solid rgba(88,101,242,.25);
+  font-size:9px;padding:4px 10px;border-radius:3px;
+  text-decoration:none;transition:all .15s;
+  display:flex;align-items:center;gap:5px;
+}
+.fdiscord:hover{background:rgba(88,101,242,.28);}
+
+/* SECTION DIVIDER — DATAFRAME TABLE */
+.df-section{background:var(--bg2);border-top:1px solid var(--border);padding:60px 40px;}
+.sec-eye{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-eye::before{content:'#';color:var(--muted);}
+.sec-h{font-family:'Instrument Serif',serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:400;margin-bottom:10px;}
+.sec-h em{color:var(--green);font-style:italic;}
+.sec-sub{font-family:'Fira Code',monospace;font-size:12px;color:var(--muted);max-width:600px;line-height:1.9;margin-bottom:40px;}
+
+.nb-wrap{
+  background:var(--nb-bg);border:1px solid var(--nb-border);
+  border-radius:8px;overflow:hidden;font-family:'Fira Code',monospace;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.nb-bar{
+  background:#1a1d26;padding:9px 16px;border-bottom:1px solid var(--nb-border);
+  display:flex;align-items:center;gap:8px;
+}
+.nb-dots{display:flex;gap:5px;}
+.nb-dots span{width:9px;height:9px;border-radius:50%;}
+.nb-file{font-size:10px;color:var(--muted);margin-left:6px;}
+.nb-kernel{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);}
+.kdot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);}
+
+.nb-code{padding:16px 20px;background:#151720;border-bottom:1px solid var(--nb-border);font-size:12px;line-height:1.75;}
+.kw{color:#ff79c6;}.fn{color:#50fa7b;}.st{color:#f1fa8c;}
+.cm2{color:#5a6080;font-style:italic;}.nb2{color:#bd93f9;}
+.op{color:#ff79c6;}.nu{color:#bd93f9;}.df2{color:#8be9fd;}.at{color:#ffb86c;}
+
+.df-out{overflow-x:auto;padding:14px 16px;}
+.df-tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.df-tbl th{
+  background:#1c1f2e;color:var(--blue);
+  padding:8px 14px;text-align:left;
+  border:1px solid var(--nb-border);font-weight:600;white-space:nowrap;
+}
+.df-tbl td{padding:7px 14px;border:1px solid rgba(35,38,47,.5);white-space:nowrap;}
+.df-tbl tr:hover td{background:rgba(255,255,255,.02);}
+.ix{color:var(--muted)!important;font-size:10px;}
+.df-shape{font-size:10.5px;color:var(--muted);padding:10px 16px;border-top:1px solid var(--nb-border);}
+
+/* role pills */
+.rp{display:inline-block;font-size:10px;padding:2px 9px;border-radius:3px;}
+.rp-head{background:rgba(61,214,140,.12);color:var(--green);}
+.rp-mgmt{background:rgba(77,166,255,.12);color:var(--blue);}
+.rp-lead{background:rgba(255,159,67,.12);color:var(--orange);}
+.rp-coord{background:rgba(199,125,255,.12);color:var(--purple);}
+
+/* SCROLL */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.on{opacity:1;transform:none;}
+
+/* FOOTER */
+footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:22px 40px;font-family:'Fira Code',monospace;font-size:11px;
+  color:var(--muted);display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+footer a{color:var(--green);text-decoration:none;}
+
+@media(max-width:900px){
+  .main{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .area{padding:20px;}
+  .page-hero{padding:50px 20px 40px;}
+  nav{padding:12px 20px;}
+  .nav-links{display:none;}
+  .hero-grid{grid-template-columns:1fr;}
+  .term-card{display:none;}
+  .filterbar{padding:14px 20px;}
+  .df-section{padding:40px 20px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <a href="n8n-community.html">n8n_community</a>
+    <span class="nav-sep">/</span>
+    <span style="color:var(--c)">team.py</span>
+  </div>
+  <div class="nav-links">
+    <a href="n8n-community.html#about">overview</a>
+    <a href="n8n-community.html#focus">modules</a>
+    <a href="#" class="active">team</a>
+    <a href="n8n-community.html#join">join()</a>
+  </div>
+  <div class="nav-stat"><div class="live-dot"></div>8 members · ACTIVE</div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="n8n-community.html">n8n_community</a>
+      <span style="color:var(--border2)">/</span>
+      <span style="color:var(--green)">team.py</span>
+    </div>
+    <div class="hero-grid reveal">
+      <div>
+        <div class="eyebrow">community.get_coreteam()</div>
+        <h1 class="page-title">The <em>core minds</em><br>of N8N DSC</h1>
+        <p class="page-sub">
+          Authorised by the N8N DSC Core Committee — these are the architects, leads, and coordinators who built and run the N8N Data Science Community at HBTU Kanpur.
+          <br><br>
+          <span style="color:var(--green)">len(members)</span> → <span style="color:var(--c)">8</span> &nbsp;|&nbsp; <span style="color:var(--green)">roles.unique()</span> → <span style="color:var(--c)">4</span>
+        </p>
+      </div>
+      <div class="term-card">
+        <div class="tc-bar">
+          <div class="tc-dots">
+            <span style="background:#ff5f57"></span>
+            <span style="background:#ffbd2e"></span>
+            <span style="background:#28ca41"></span>
+          </div>
+          <span class="tc-title">coreteam_registry.py</span>
+        </div>
+        <div class="tc-body">
+          <div class="hl"><span class="k">community</span><span style="color:var(--green)">N8N DSC</span></div>
+          <div class="hl"><span class="k">institution</span><span style="color:var(--c)">HBTU · MDS</span></div>
+          <div class="hl"><span class="k">auth_by</span><span style="color:var(--blue)">N8N Core Committee</span></div>
+          <div class="hl"><span class="k">community_head</span><span style="color:var(--green)">Prakhar Bajpai</span></div>
+          <div class="hl"><span class="k">mgmt_leads</span><span style="color:var(--orange)">Shrey Nigam, Shrey Shukla</span></div>
+          <div class="hl"><span class="k">overall_leads</span><span style="color:var(--orange)">Mrityunjai, Devesh</span></div>
+          <div class="hl"><span class="k">coordinators</span><span style="color:var(--purple)">4 members</span></div>
+          <div class="hl"><span class="k">status</span><span style="color:var(--green)">ACTIVE ● <span class="cb"></span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filterbar">
+  <span class="fl">filter_by_role:</span>
+  <div class="chips">
+    <span class="chip f-all on" data-filter="all">all_members()</span>
+    <span class="chip f-head" data-filter="head">👑 Community Head</span>
+    <span class="chip f-mgmt" data-filter="mgmt">📊 Management Lead</span>
+    <span class="chip f-lead" data-filter="lead">🔥 Overall Lead</span>
+    <span class="chip f-coord" data-filter="coord">🔗 Co-ordinator</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div style="margin-bottom:20px">
+      <div class="sb-h">Roles</div>
+      <div class="sb-item on" data-filter="all">
+        <span><span class="sb-dot" style="background:var(--green)"></span>All Members</span>
+        <span class="sb-n">8</span>
+      </div>
+      <div class="sb-item" data-filter="head">
+        <span><span class="sb-dot" style="background:var(--green)"></span>Community Head</span>
+        <span class="sb-n">1</span>
+      </div>
+      <div class="sb-item" data-filter="mgmt">
+        <span><span class="sb-dot" style="background:var(--blue)"></span>Management Lead</span>
+        <span class="sb-n">2</span>
+      </div>
+      <div class="sb-item" data-filter="lead">
+        <span><span class="sb-dot" style="background:var(--orange)"></span>Overall Lead</span>
+        <span class="sb-n">2</span>
+      </div>
+      <div class="sb-item" data-filter="coord">
+        <span><span class="sb-dot" style="background:var(--purple)"></span>Co-ordinator</span>
+        <span class="sb-n">3</span>
+      </div>
+    </div>
+    <div class="sb-sep"></div>
+    <div style="margin-bottom:20px">
+      <div class="sb-h">Community Stats</div>
+      <div class="mini-stat"><span class="mk">members</span><span class="mv" style="color:var(--green)">8</span></div>
+      <div class="mini-stat"><span class="mk">focus_areas</span><span class="mv" style="color:var(--blue)">4</span></div>
+      <div class="mini-stat"><span class="mk">platform</span><span class="mv" style="color:var(--orange)">Discord</span></div>
+      <div class="mini-stat"><span class="mk">institution</span><span class="mv">HBTU</span></div>
+      <div class="mini-stat"><span class="mk">status</span><span class="mv" style="color:var(--green)">● ACTIVE</span></div>
+    </div>
+    <div class="sb-sep"></div>
+    <div>
+      <div class="sb-h">Authorised By</div>
+      <div style="padding:10px 8px;font-size:10px;color:var(--muted);line-height:1.9">
+        N8N DSC<br>Core Committee<br>
+        <span style="color:var(--border2)">All Rights Reserved</span><br>
+        <span style="color:var(--green)">© 2026</span>
+      </div>
+      <div style="margin-top:8px;padding:0 4px">
+        <a href="https://discord.gg/J8uNurwr" target="_blank"
+           style="display:block;text-align:center;background:rgba(61,214,140,.1);border:1px solid rgba(61,214,140,.2);color:var(--green);text-decoration:none;padding:7px 12px;border-radius:4px;font-size:10px;transition:all .2s">
+          Join Community ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMBERS AREA -->
+  <div class="area">
+    <div class="area-head">
+      <span class="result-txt">members_df.query() → <b id="countTxt">8</b> results</span>
+    </div>
+    <div class="mgrid" id="grid">
+
+<!-- ═══════════════════════════════════
+     CARD 1 — PRAKHAR BAJPAI · HEAD
+═══════════════════════════════════ -->
+<div class="mcard reveal" data-role="head">
+  <div class="cglow"></div>
+  <div class="cstripe" style="background:linear-gradient(90deg,var(--green),var(--teal))"></div>
+  <div class="chead">
+    <div class="avatar" style="background:linear-gradient(135deg,rgba(61,214,140,.18),rgba(0,212,170,.1))">
+      PB
+      <div class="avatar-border" style="border-color:rgba(61,214,140,.35)"></div>
+    </div>
+    <div class="minfo">
+      <div class="mname">Prakhar Bajpai</div>
+      <div class="mhandle">@<span>prakhar_bajpai</span> · HBTU MDS</div>
+      <span class="rbadge" style="background:rgba(61,214,140,.12);color:var(--green);border:1px solid rgba(61,214,140,.25)">👑 Community Head</span>
+    </div>
+  </div>
+  <div class="ctabs">
+    <div class="ctab on" onclick="tab(this,'pb-card')">model_card</div>
+    <div class="ctab" onclick="tab(this,'pb-skills')">skills()</div>
+    <div class="ctab" onclick="tab(this,'pb-act')">activity</div>
+    <div class="ctab" onclick="tab(this,'pb-bio')">bio</div>
+  </div>
+  <div class="cbody" id="pb-card">
+    <div class="mrow"><span class="mk">role</span><span class="mv g">Community Head</span></div>
+    <div class="mrow"><span class="mk">organisation</span><span class="mv">N8N Data Science Community</span></div>
+    <div class="mrow"><span class="mk">auth_level</span><span class="mv g">Core Team · Founder</span></div>
+    <div class="mrow"><span class="mk">specialisation</span><span class="mv b">Data Science · Leadership</span></div>
+    <div class="mrow"><span class="mk">licence</span><span class="mv t">N8N DSC Core Committee</span></div>
+    <div class="tags">
+      <span class="tag t-ml">ML</span><span class="tag t-py">Python</span>
+      <span class="tag t-da">Analytics</span><span class="tag t-viz">Leadership</span>
+    </div>
+  </div>
+  <div class="cbody" id="pb-skills" style="display:none">
+    <div class="srow"><div class="shead"><span class="sname">Machine Learning</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--blue),var(--green))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Data Analytics</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--green),var(--teal))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Python</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--teal),var(--blue))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Leadership</span><span class="sscore">10/10</span></div><div class="strack"><div class="sfill init" style="width:100%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></div></div></div>
+  </div>
+  <div class="cbody" id="pb-act" style="display:none">
+    <div style="font-size:9px;color:var(--muted);margin-bottom:6px">community contributions — last 6 months</div>
+    <div class="heatmap" id="hm-pb"></div>
+    <div class="hm-lbl"><span>6mo ago</span><span>today</span></div>
+  </div>
+  <div class="cbody" id="pb-bio" style="display:none">
+    <div class="bio-quote">"Data is the new oil — we're here to refine it."</div>
+    <div class="bio-txt">Community Head of N8N DSC, authorised by the N8N Core Committee. Drives the vision and direction of the community, ensuring every member gets hands-on, industry-relevant exposure to data science.</div>
+  </div>
+  <div class="cfoot">
+    <div class="fstat">🏆 <b>Head</b></div>
+    <div class="fstat">🔑 <b>Core</b> auth</div>
+    <a href="https://discord.gg/J8uNurwr" target="_blank" class="fdiscord">⬡ Discord</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     CARD 2 — SHREY NIGAM · MGMT LEAD
+═══════════════════════════════════ -->
+<div class="mcard reveal" data-role="mgmt">
+  <div class="cglow" style="background:radial-gradient(ellipse at 50% 0%,rgba(77,166,255,.05) 0%,transparent 55%)"></div>
+  <div class="cstripe" style="background:linear-gradient(90deg,var(--blue),var(--purple))"></div>
+  <div class="chead">
+    <div class="avatar" style="background:linear-gradient(135deg,rgba(77,166,255,.18),rgba(199,125,255,.1))">
+      SN
+      <div class="avatar-border" style="border-color:rgba(77,166,255,.35)"></div>
+    </div>
+    <div class="minfo">
+      <div class="mname">Shrey Nigam</div>
+      <div class="mhandle">@<span>shrey_nigam</span> · HBTU MDS</div>
+      <span class="rbadge" style="background:rgba(77,166,255,.12);color:var(--blue);border:1px solid rgba(77,166,255,.25)">📊 Management Lead</span>
+    </div>
+  </div>
+  <div class="ctabs">
+    <div class="ctab on" onclick="tab(this,'sn-card')">model_card</div>
+    <div class="ctab" onclick="tab(this,'sn-skills')">skills()</div>
+    <div class="ctab" onclick="tab(this,'sn-act')">activity</div>
+    <div class="ctab" onclick="tab(this,'sn-bio')">bio</div>
+  </div>
+  <div class="cbody" id="sn-card">
+    <div class="mrow"><span class="mk">role</span><span class="mv b">Management Lead</span></div>
+    <div class="mrow"><span class="mk">organisation</span><span class="mv">N8N Data Science Community</span></div>
+    <div class="mrow"><span class="mk">auth_level</span><span class="mv g">Core Team</span></div>
+    <div class="mrow"><span class="mk">specialisation</span><span class="mv b">Community Management · DS</span></div>
+    <div class="mrow"><span class="mk">licence</span><span class="mv t">N8N DSC Core Committee</span></div>
+    <div class="tags">
+      <span class="tag t-ml">ML</span><span class="tag t-py">Python</span>
+      <span class="tag t-da">Analytics</span><span class="tag t-sql">Management</span>
+    </div>
+  </div>
+  <div class="cbody" id="sn-skills" style="display:none">
+    <div class="srow"><div class="shead"><span class="sname">Data Analytics</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--blue),var(--teal))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Machine Learning</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--green),var(--blue))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Python</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--teal),var(--blue))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Community Ops</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--purple),var(--blue))"></div></div></div>
+  </div>
+  <div class="cbody" id="sn-act" style="display:none">
+    <div style="font-size:9px;color:var(--muted);margin-bottom:6px">community contributions — last 6 months</div>
+    <div class="heatmap" id="hm-sn"></div>
+    <div class="hm-lbl"><span>6mo ago</span><span>today</span></div>
+  </div>
+  <div class="cbody" id="sn-bio" style="display:none">
+    <div class="bio-quote">"Managing teams is just ensemble learning — many weak learners, one strong output."</div>
+    <div class="bio-txt">Management Lead at N8N DSC. Oversees community operations, coordinates between teams, and ensures smooth execution of all learning events and projects.</div>
+  </div>
+  <div class="cfoot">
+    <div class="fstat">📊 <b>Mgmt</b> Lead</div>
+    <div class="fstat">🔑 <b>Core</b> auth</div>
+    <a href="https://discord.gg/J8uNurwr" target="_blank" class="fdiscord">⬡ Discord</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     CARD 3 — MRITYUNJAI SACHAN · OVERALL LEAD
+═══════════════════════════════════ -->
+<div class="mcard reveal" data-role="lead">
+  <div class="cglow" style="background:radial-gradient(ellipse at 50% 0%,rgba(255,159,67,.05) 0%,transparent 55%)"></div>
+  <div class="cstripe" style="background:linear-gradient(90deg,var(--orange),var(--yellow))"></div>
+  <div class="chead">
+    <div class="avatar" style="background:linear-gradient(135deg,rgba(255,159,67,.18),rgba(255,230,109,.1))">
+      MS
+      <div class="avatar-border" style="border-color:rgba(255,159,67,.35)"></div>
+    </div>
+    <div class="minfo">
+      <div class="mname">Mrityunjai Sachan</div>
+      <div class="mhandle">@<span>mrityunjai</span> · HBTU MDS</div>
+      <span class="rbadge" style="background:rgba(255,159,67,.12);color:var(--orange);border:1px solid rgba(255,159,67,.25)">🔥 Overall Lead</span>
+    </div>
+  </div>
+  <div class="ctabs">
+    <div class="ctab on" onclick="tab(this,'ms-card')">model_card</div>
+    <div class="ctab" onclick="tab(this,'ms-skills')">skills()</div>
+    <div class="ctab" onclick="tab(this,'ms-act')">activity</div>
+    <div class="ctab" onclick="tab(this,'ms-bio')">bio</div>
+  </div>
+  <div class="cbody" id="ms-card">
+    <div class="mrow"><span class="mk">role</span><span class="mv o">Overall Lead</span></div>
+    <div class="mrow"><span class="mk">organisation</span><span class="mv">N8N Data Science Community</span></div>
+    <div class="mrow"><span class="mk">auth_level</span><span class="mv g">Core Team</span></div>
+    <div class="mrow"><span class="mk">specialisation</span><span class="mv o">ML · Project Leadership</span></div>
+    <div class="mrow"><span class="mk">licence</span><span class="mv t">N8N DSC Core Committee</span></div>
+    <div class="tags">
+      <span class="tag t-ml">ML</span><span class="tag t-dl">Deep Learning</span>
+      <span class="tag t-py">Python</span><span class="tag t-da">Analytics</span>
+    </div>
+  </div>
+  <div class="cbody" id="ms-skills" style="display:none">
+    <div class="srow"><div class="shead"><span class="sname">Machine Learning</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Deep Learning</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Python</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--blue),var(--teal))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Project Mgmt</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--orange),var(--red))"></div></div></div>
+  </div>
+  <div class="cbody" id="ms-act" style="display:none">
+    <div style="font-size:9px;color:var(--muted);margin-bottom:6px">community contributions — last 6 months</div>
+    <div class="heatmap" id="hm-ms"></div>
+    <div class="hm-lbl"><span>6mo ago</span><span>today</span></div>
+  </div>
+  <div class="cbody" id="ms-bio" style="display:none">
+    <div class="bio-quote">"Every great model starts with great data — and great questions."</div>
+    <div class="bio-txt">Overall Lead at N8N DSC. Coordinates across all learning tracks, heads project teams, and mentors members through real-world ML and data science challenges.</div>
+  </div>
+  <div class="cfoot">
+    <div class="fstat">🔥 <b>Overall</b> Lead</div>
+    <div class="fstat">🔑 <b>Core</b> auth</div>
+    <a href="https://discord.gg/J8uNurwr" target="_blank" class="fdiscord">⬡ Discord</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     CARD 4 — PRAKHAR MISHRA · CO-ORD
+═══════════════════════════════════ -->
+<div class="mcard reveal" data-role="coord">
+  <div class="cglow" style="background:radial-gradient(ellipse at 50% 0%,rgba(199,125,255,.05) 0%,transparent 55%)"></div>
+  <div class="cstripe" style="background:linear-gradient(90deg,var(--purple),var(--pink))"></div>
+  <div class="chead">
+    <div class="avatar" style="background:linear-gradient(135deg,rgba(199,125,255,.18),rgba(255,107,157,.1))">
+      PM
+      <div class="avatar-border" style="border-color:rgba(199,125,255,.35)"></div>
+    </div>
+    <div class="minfo">
+      <div class="mname">Prakhar Mishra</div>
+      <div class="mhandle">@<span>prakhar_mishra</span> · HBTU MDS</div>
+      <span class="rbadge" style="background:rgba(199,125,255,.12);color:var(--purple);border:1px solid rgba(199,125,255,.25)">🔗 Co-ordinator</span>
+    </div>
+  </div>
+  <div class="ctabs">
+    <div class="ctab on" onclick="tab(this,'pm-card')">model_card</div>
+    <div class="ctab" onclick="tab(this,'pm-skills')">skills()</div>
+    <div class="ctab" onclick="tab(this,'pm-act')">activity</div>
+    <div class="ctab" onclick="tab(this,'pm-bio')">bio</div>
+  </div>
+  <div class="cbody" id="pm-card">
+    <div class="mrow"><span class="mk">role</span><span class="mv p">Co-ordinator</span></div>
+    <div class="mrow"><span class="mk">organisation</span><span class="mv">N8N Data Science Community</span></div>
+    <div class="mrow"><span class="mk">auth_level</span><span class="mv g">Core Team</span></div>
+    <div class="mrow"><span class="mk">specialisation</span><span class="mv p">NLP · Data Science</span></div>
+    <div class="mrow"><span class="mk">licence</span><span class="mv t">N8N DSC Core Committee</span></div>
+    <div class="tags">
+      <span class="tag t-nlp">NLP</span><span class="tag t-dl">Deep Learning</span>
+      <span class="tag t-py">Python</span><span class="tag t-ml">ML</span>
+    </div>
+  </div>
+  <div class="cbody" id="pm-skills" style="display:none">
+    <div class="srow"><div class="shead"><span class="sname">NLP / Transformers</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--teal),var(--blue))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Deep Learning</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Machine Learning</span><span class="sscore">7/10</span></div><div class="strack"><div class="sfill init" style="width:70%;background:linear-gradient(90deg,var(--green),var(--blue))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Python</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--blue),var(--teal))"></div></div></div>
+  </div>
+  <div class="cbody" id="pm-act" style="display:none">
+    <div style="font-size:9px;color:var(--muted);margin-bottom:6px">community contributions — last 6 months</div>
+    <div class="heatmap" id="hm-pm"></div>
+    <div class="hm-lbl"><span>6mo ago</span><span>today</span></div>
+  </div>
+  <div class="cbody" id="pm-bio" style="display:none">
+    <div class="bio-quote">"Language is just structured data — and machines can learn it too."</div>
+    <div class="bio-txt">Co-ordinator at N8N DSC with a focus on NLP and language models. Helps coordinate community sessions and contributes to research discussion channels.</div>
+  </div>
+  <div class="cfoot">
+    <div class="fstat">🔗 <b>Co-ord</b></div>
+    <div class="fstat">🔑 <b>Core</b> auth</div>
+    <a href="https://discord.gg/J8uNurwr" target="_blank" class="fdiscord">⬡ Discord</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     CARD 5 — DEVESH KUMAR · OVERALL LEAD
+═══════════════════════════════════ -->
+<div class="mcard reveal" data-role="lead">
+  <div class="cglow" style="background:radial-gradient(ellipse at 50% 0%,rgba(255,107,107,.05) 0%,transparent 55%)"></div>
+  <div class="cstripe" style="background:linear-gradient(90deg,var(--red),var(--orange))"></div>
+  <div class="chead">
+    <div class="avatar" style="background:linear-gradient(135deg,rgba(255,107,107,.18),rgba(255,159,67,.1))">
+      DK
+      <div class="avatar-border" style="border-color:rgba(255,107,107,.35)"></div>
+    </div>
+    <div class="minfo">
+      <div class="mname">Devesh Kumar</div>
+      <div class="mhandle">@<span>devesh_kumar</span> · HBTU MDS</div>
+      <span class="rbadge" style="background:rgba(255,107,107,.12);color:var(--red);border:1px solid rgba(255,107,107,.25)">🔥 Overall Lead</span>
+    </div>
+  </div>
+  <div class="ctabs">
+    <div class="ctab on" onclick="tab(this,'dk-card')">model_card</div>
+    <div class="ctab" onclick="tab(this,'dk-skills')">skills()</div>
+    <div class="ctab" onclick="tab(this,'dk-act')">activity</div>
+    <div class="ctab" onclick="tab(this,'dk-bio')">bio</div>
+  </div>
+  <div class="cbody" id="dk-card">
+    <div class="mrow"><span class="mk">role</span><span class="mv" style="color:var(--red)">Overall Lead</span></div>
+    <div class="mrow"><span class="mk">organisation</span><span class="mv">N8N Data Science Community</span></div>
+    <div class="mrow"><span class="mk">auth_level</span><span class="mv g">Core Team</span></div>
+    <div class="mrow"><span class="mk">specialisation</span><span class="mv o">ML · Statistical Modelling</span></div>
+    <div class="mrow"><span class="mk">licence</span><span class="mv t">N8N DSC Core Committee</span></div>
+    <div class="tags">
+      <span class="tag t-ml">ML</span><span class="tag t-stat">Statistics</span>
+      <span class="tag t-py">Python</span><span class="tag t-da">Analytics</span>
+    </div>
+  </div>
+  <div class="cbody" id="dk-skills" style="display:none">
+    <div class="srow"><div class="shead"><span class="sname">Statistics</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--red),var(--orange))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Machine Learning</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Python</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--blue),var(--teal))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Data Analytics</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--green),var(--teal))"></div></div></div>
+  </div>
+  <div class="cbody" id="dk-act" style="display:none">
+    <div style="font-size:9px;color:var(--muted);margin-bottom:6px">community contributions — last 6 months</div>
+    <div class="heatmap" id="hm-dk"></div>
+    <div class="hm-lbl"><span>6mo ago</span><span>today</span></div>
+  </div>
+  <div class="cbody" id="dk-bio" style="display:none">
+    <div class="bio-quote">"Statistics is the grammar of data science — master it, and everything else clicks."</div>
+    <div class="bio-txt">Overall Lead at N8N DSC with a strong foundation in statistical modelling. Leads learning initiatives, project reviews, and helps members build rigorous, theory-grounded skills.</div>
+  </div>
+  <div class="cfoot">
+    <div class="fstat">🔥 <b>Overall</b> Lead</div>
+    <div class="fstat">🔑 <b>Core</b> auth</div>
+    <a href="https://discord.gg/J8uNurwr" target="_blank" class="fdiscord">⬡ Discord</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     CARD 6 — SHASWAT SRIVASTAVA · CO-ORD
+═══════════════════════════════════ -->
+<div class="mcard reveal" data-role="coord">
+  <div class="cglow" style="background:radial-gradient(ellipse at 50% 0%,rgba(199,125,255,.05) 0%,transparent 55%)"></div>
+  <div class="cstripe" style="background:linear-gradient(90deg,var(--purple),var(--blue))"></div>
+  <div class="chead">
+    <div class="avatar" style="background:linear-gradient(135deg,rgba(199,125,255,.18),rgba(77,166,255,.1))">
+      SS
+      <div class="avatar-border" style="border-color:rgba(199,125,255,.35)"></div>
+    </div>
+    <div class="minfo">
+      <div class="mname">Shaswat Srivastava</div>
+      <div class="mhandle">@<span>shaswat_s</span> · HBTU MDS</div>
+      <span class="rbadge" style="background:rgba(199,125,255,.12);color:var(--purple);border:1px solid rgba(199,125,255,.25)">🔗 Co-ordinator</span>
+    </div>
+  </div>
+  <div class="ctabs">
+    <div class="ctab on" onclick="tab(this,'ssv-card')">model_card</div>
+    <div class="ctab" onclick="tab(this,'ssv-skills')">skills()</div>
+    <div class="ctab" onclick="tab(this,'ssv-act')">activity</div>
+    <div class="ctab" onclick="tab(this,'ssv-bio')">bio</div>
+  </div>
+  <div class="cbody" id="ssv-card">
+    <div class="mrow"><span class="mk">role</span><span class="mv p">Co-ordinator</span></div>
+    <div class="mrow"><span class="mk">organisation</span><span class="mv">N8N Data Science Community</span></div>
+    <div class="mrow"><span class="mk">auth_level</span><span class="mv g">Core Team</span></div>
+    <div class="mrow"><span class="mk">specialisation</span><span class="mv p">Data Viz · Analytics</span></div>
+    <div class="mrow"><span class="mk">licence</span><span class="mv t">N8N DSC Core Committee</span></div>
+    <div class="tags">
+      <span class="tag t-viz">Visualization</span><span class="tag t-da">Analytics</span>
+      <span class="tag t-py">Python</span><span class="tag t-sql">SQL</span>
+    </div>
+  </div>
+  <div class="cbody" id="ssv-skills" style="display:none">
+    <div class="srow"><div class="shead"><span class="sname">Data Visualization</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Analytics</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">SQL</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--blue),var(--teal))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Python</span><span class="sscore">7/10</span></div><div class="strack"><div class="sfill init" style="width:70%;background:linear-gradient(90deg,var(--teal),var(--green))"></div></div></div>
+  </div>
+  <div class="cbody" id="ssv-act" style="display:none">
+    <div style="font-size:9px;color:var(--muted);margin-bottom:6px">community contributions — last 6 months</div>
+    <div class="heatmap" id="hm-ssv"></div>
+    <div class="hm-lbl"><span>6mo ago</span><span>today</span></div>
+  </div>
+  <div class="cbody" id="ssv-bio" style="display:none">
+    <div class="bio-quote">"A good chart is worth a thousand rows of data."</div>
+    <div class="bio-txt">Co-ordinator at N8N DSC specialising in data visualization and analytics. Brings clarity to complex datasets through stunning visuals and insightful dashboards.</div>
+  </div>
+  <div class="cfoot">
+    <div class="fstat">🔗 <b>Co-ord</b></div>
+    <div class="fstat">🔑 <b>Core</b> auth</div>
+    <a href="https://discord.gg/J8uNurwr" target="_blank" class="fdiscord">⬡ Discord</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     CARD 7 — SHREY SHUKLA · MGMT LEAD
+═══════════════════════════════════ -->
+<div class="mcard reveal" data-role="mgmt">
+  <div class="cglow" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,212,170,.05) 0%,transparent 55%)"></div>
+  <div class="cstripe" style="background:linear-gradient(90deg,var(--teal),var(--green))"></div>
+  <div class="chead">
+    <div class="avatar" style="background:linear-gradient(135deg,rgba(0,212,170,.18),rgba(61,214,140,.1))">
+      SS
+      <div class="avatar-border" style="border-color:rgba(0,212,170,.35)"></div>
+    </div>
+    <div class="minfo">
+      <div class="mname">Shrey Shukla</div>
+      <div class="mhandle">@<span>shrey_shukla</span> · HBTU MDS</div>
+      <span class="rbadge" style="background:rgba(0,212,170,.12);color:var(--teal);border:1px solid rgba(0,212,170,.25)">📊 Management Lead</span>
+    </div>
+  </div>
+  <div class="ctabs">
+    <div class="ctab on" onclick="tab(this,'ssk-card')">model_card</div>
+    <div class="ctab" onclick="tab(this,'ssk-skills')">skills()</div>
+    <div class="ctab" onclick="tab(this,'ssk-act')">activity</div>
+    <div class="ctab" onclick="tab(this,'ssk-bio')">bio</div>
+  </div>
+  <div class="cbody" id="ssk-card">
+    <div class="mrow"><span class="mk">role</span><span class="mv t">Management Lead</span></div>
+    <div class="mrow"><span class="mk">organisation</span><span class="mv">N8N Data Science Community</span></div>
+    <div class="mrow"><span class="mk">auth_level</span><span class="mv g">Core Team</span></div>
+    <div class="mrow"><span class="mk">specialisation</span><span class="mv t">DS Operations · Analytics</span></div>
+    <div class="mrow"><span class="mk">licence</span><span class="mv t">N8N DSC Core Committee</span></div>
+    <div class="tags">
+      <span class="tag t-da">Analytics</span><span class="tag t-ml">ML</span>
+      <span class="tag t-py">Python</span><span class="tag t-sql">SQL</span>
+    </div>
+  </div>
+  <div class="cbody" id="ssk-skills" style="display:none">
+    <div class="srow"><div class="shead"><span class="sname">Analytics</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--teal),var(--green))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Machine Learning</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--green),var(--blue))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">SQL</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--blue),var(--teal))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Operations</span><span class="sscore">9/10</span></div><div class="strack"><div class="sfill init" style="width:90%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></div></div></div>
+  </div>
+  <div class="cbody" id="ssk-act" style="display:none">
+    <div style="font-size:9px;color:var(--muted);margin-bottom:6px">community contributions — last 6 months</div>
+    <div class="heatmap" id="hm-ssk"></div>
+    <div class="hm-lbl"><span>6mo ago</span><span>today</span></div>
+  </div>
+  <div class="cbody" id="ssk-bio" style="display:none">
+    <div class="bio-quote">"Behind every great community is consistent execution."</div>
+    <div class="bio-txt">Management Lead at N8N DSC focused on DS operations and analytics workflows. Ensures community initiatives run smoothly and members always have structured learning paths.</div>
+  </div>
+  <div class="cfoot">
+    <div class="fstat">📊 <b>Mgmt</b> Lead</div>
+    <div class="fstat">🔑 <b>Core</b> auth</div>
+    <a href="https://discord.gg/J8uNurwr" target="_blank" class="fdiscord">⬡ Discord</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     CARD 8 — SHREE AWASTHI · CO-ORD
+═══════════════════════════════════ -->
+<div class="mcard reveal" data-role="coord">
+  <div class="cglow" style="background:radial-gradient(ellipse at 50% 0%,rgba(255,107,157,.05) 0%,transparent 55%)"></div>
+  <div class="cstripe" style="background:linear-gradient(90deg,var(--pink),var(--purple))"></div>
+  <div class="chead">
+    <div class="avatar" style="background:linear-gradient(135deg,rgba(255,107,157,.18),rgba(199,125,255,.1))">
+      SA
+      <div class="avatar-border" style="border-color:rgba(255,107,157,.35)"></div>
+    </div>
+    <div class="minfo">
+      <div class="mname">Shree Awasthi</div>
+      <div class="mhandle">@<span>shree_awasthi</span> · HBTU MDS</div>
+      <span class="rbadge" style="background:rgba(255,107,157,.12);color:var(--pink);border:1px solid rgba(255,107,157,.25)">🔗 Co-ordinator</span>
+    </div>
+  </div>
+  <div class="ctabs">
+    <div class="ctab on" onclick="tab(this,'sa-card')">model_card</div>
+    <div class="ctab" onclick="tab(this,'sa-skills')">skills()</div>
+    <div class="ctab" onclick="tab(this,'sa-act')">activity</div>
+    <div class="ctab" onclick="tab(this,'sa-bio')">bio</div>
+  </div>
+  <div class="cbody" id="sa-card">
+    <div class="mrow"><span class="mk">role</span><span class="mv" style="color:var(--pink)">Co-ordinator</span></div>
+    <div class="mrow"><span class="mk">organisation</span><span class="mv">N8N Data Science Community</span></div>
+    <div class="mrow"><span class="mk">auth_level</span><span class="mv g">Core Team</span></div>
+    <div class="mrow"><span class="mk">specialisation</span><span class="mv p">AI · ML Research</span></div>
+    <div class="mrow"><span class="mk">licence</span><span class="mv t">N8N DSC Core Committee</span></div>
+    <div class="tags">
+      <span class="tag t-dl">Deep Learning</span><span class="tag t-nlp">AI Research</span>
+      <span class="tag t-py">Python</span><span class="tag t-ml">ML</span>
+    </div>
+  </div>
+  <div class="cbody" id="sa-skills" style="display:none">
+    <div class="srow"><div class="shead"><span class="sname">Deep Learning</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">AI Research</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--purple),var(--blue))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Machine Learning</span><span class="sscore">8/10</span></div><div class="strack"><div class="sfill init" style="width:80%;background:linear-gradient(90deg,var(--blue),var(--green))"></div></div></div>
+    <div class="srow"><div class="shead"><span class="sname">Python</span><span class="sscore">7/10</span></div><div class="strack"><div class="sfill init" style="width:70%;background:linear-gradient(90deg,var(--teal),var(--blue))"></div></div></div>
+  </div>
+  <div class="cbody" id="sa-act" style="display:none">
+    <div style="font-size:9px;color:var(--muted);margin-bottom:6px">community contributions — last 6 months</div>
+    <div class="heatmap" id="hm-sa"></div>
+    <div class="hm-lbl"><span>6mo ago</span><span>today</span></div>
+  </div>
+  <div class="cbody" id="sa-bio" style="display:none">
+    <div class="bio-quote">"The best way to understand AI is to build it, break it, then build it better."</div>
+    <div class="bio-txt">Co-ordinator at N8N DSC with deep interest in AI research and neural architectures. Actively contributes to paper discussions and deep learning project groups within the community.</div>
+  </div>
+  <div class="cfoot">
+    <div class="fstat">🔗 <b>Co-ord</b></div>
+    <div class="fstat">🔑 <b>Core</b> auth</div>
+    <a href="https://discord.gg/J8uNurwr" target="_blank" class="fdiscord">⬡ Discord</a>
+  </div>
+</div>
+
+    </div><!-- /mgrid -->
+  </div><!-- /area -->
+</div><!-- /main -->
+
+<!-- DATAFRAME TABLE SECTION -->
+<div class="df-section">
+  <div class="container">
+    <div class="sec-eye">team registry</div>
+    <h2 class="sec-h">coreteam.<em>to_dataframe()</em></h2>
+    <p class="sec-sub">Full N8N DSC Core Team registry as a pandas DataFrame — authorised by the N8N Data Science Community Core Committee, HBTU Kanpur, 2026.</p>
+
+    <div class="nb-wrap reveal">
+      <div class="nb-bar">
+        <div class="nb-dots">
+          <span style="background:#ff5f57"></span>
+          <span style="background:#ffbd2e"></span>
+          <span style="background:#28ca41"></span>
+        </div>
+        <span class="nb-file">n8n_coreteam_registry.ipynb</span>
+        <div class="nb-kernel"><div class="kdot"></div>Python 3 (ipykernel)</div>
+      </div>
+      <div class="nb-code">
+        <span class="cm2"># N8N DSC Core Team — Official Registry</span><br>
+        <span class="kw">import</span> <span class="df2">pandas</span> <span class="kw">as</span> <span class="at">pd</span><br>
+        <span class="df2">team</span> <span class="op">=</span> <span class="fn">pd</span><span class="op">.</span><span class="fn">read_json</span>(<span class="st">"n8n_coreteam.json"</span>)<br>
+        <span class="df2">team</span><span class="op">.</span><span class="fn">sort_values</span>([<span class="st">"auth_level"</span>, <span class="st">"name"</span>])<span class="op">.</span><span class="fn">reset_index</span>(<span class="at">drop</span><span class="op">=</span><span class="nb2">True</span>)
+      </div>
+      <div class="df-out">
+        <table class="df-tbl">
+          <tr>
+            <th></th><th>name</th><th>role</th><th>auth_level</th>
+            <th>specialisation</th><th>organisation</th><th>licence</th>
+          </tr>
+          <tr>
+            <td class="ix">0</td>
+            <td><strong>Prakhar Bajpai</strong></td>
+            <td><span class="rp rp-head">Community Head</span></td>
+            <td style="color:var(--green)">Core Team · Founder</td>
+            <td>Data Science · Leadership</td>
+            <td>N8N DSC</td>
+            <td style="color:var(--teal)">N8N Core Committee</td>
+          </tr>
+          <tr>
+            <td class="ix">1</td>
+            <td><strong>Shrey Nigam</strong></td>
+            <td><span class="rp rp-mgmt">Management Lead</span></td>
+            <td style="color:var(--green)">Core Team</td>
+            <td>Community Management · DS</td>
+            <td>N8N DSC</td>
+            <td style="color:var(--teal)">N8N Core Committee</td>
+          </tr>
+          <tr>
+            <td class="ix">2</td>
+            <td><strong>Mrityunjai Sachan</strong></td>
+            <td><span class="rp rp-lead">Overall Lead</span></td>
+            <td style="color:var(--green)">Core Team</td>
+            <td>ML · Project Leadership</td>
+            <td>N8N DSC</td>
+            <td style="color:var(--teal)">N8N Core Committee</td>
+          </tr>
+          <tr>
+            <td class="ix">3</td>
+            <td><strong>Prakhar Mishra</strong></td>
+            <td><span class="rp rp-coord">Co-ordinator</span></td>
+            <td style="color:var(--green)">Core Team</td>
+            <td>NLP · Data Science</td>
+            <td>N8N DSC</td>
+            <td style="color:var(--teal)">N8N Core Committee</td>
+          </tr>
+          <tr>
+            <td class="ix">4</td>
+            <td><strong>Devesh Kumar</strong></td>
+            <td><span class="rp rp-lead">Overall Lead</span></td>
+            <td style="color:var(--green)">Core Team</td>
+            <td>ML · Statistical Modelling</td>
+            <td>N8N DSC</td>
+            <td style="color:var(--teal)">N8N Core Committee</td>
+          </tr>
+          <tr>
+            <td class="ix">5</td>
+            <td><strong>Shaswat Srivastava</strong></td>
+            <td><span class="rp rp-coord">Co-ordinator</span></td>
+            <td style="color:var(--green)">Core Team</td>
+            <td>Data Viz · Analytics</td>
+            <td>N8N DSC</td>
+            <td style="color:var(--teal)">N8N Core Committee</td>
+          </tr>
+          <tr>
+            <td class="ix">6</td>
+            <td><strong>Shrey Shukla</strong></td>
+            <td><span class="rp rp-mgmt">Management Lead</span></td>
+            <td style="color:var(--green)">Core Team</td>
+            <td>DS Operations · Analytics</td>
+            <td>N8N DSC</td>
+            <td style="color:var(--teal)">N8N Core Committee</td>
+          </tr>
+          <tr>
+            <td class="ix">7</td>
+            <td><strong>Shree Awasthi</strong></td>
+            <td><span class="rp rp-coord">Co-ordinator</span></td>
+            <td style="color:var(--green)">Core Team</td>
+            <td>AI · ML Research</td>
+            <td>N8N DSC</td>
+            <td style="color:var(--teal)">N8N Core Committee</td>
+          </tr>
+        </table>
+        <div class="df-shape">team.shape → (8, 6) &nbsp;·&nbsp; team.dtypes: all object &nbsp;·&nbsp; team.isnull().sum() → 0 &nbsp;·&nbsp; <span style="color:var(--green)">Authorised by N8N DSC Core Committee · All Rights Reserved © 2026</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>
+    <a href="n8n-community.html">N8N Data Science Community</a>
+    &nbsp;·&nbsp; Dept. of Mathematics, HBTU Kanpur
+    &nbsp;·&nbsp; Core Committee © 2026
+  </span>
+  <span style="display:flex;align-items:center;gap:8px;font-size:11px;">
+    <span style="color:var(--border2)">team.status:</span>
+    <span style="color:var(--green)">active</span>
+    <span style="color:var(--border2)">|</span>
+    <a href="https://discord.gg/J8uNurwr" target="_blank">discord.gg/J8uNurwr ↗</a>
+  </span>
+</footer>
+
+</div>
+
+<script>
+// Tab switch
+function tab(el, id) {
+  const card = el.closest('.mcard');
+  card.querySelectorAll('.ctab').forEach(t => t.classList.remove('on'));
+  card.querySelectorAll('.cbody').forEach(b => b.style.display = 'none');
+  el.classList.add('on');
+  document.getElementById(id).style.display = 'block';
+  // animate skill bars when switching to skills tab
+  if(id.includes('skills')) {
+    setTimeout(()=>{
+      document.querySelectorAll(`#${id} .sfill`).forEach(f => f.classList.remove('init'));
+    }, 60);
+  }
+}
+
+// Heatmap generator
+function makeHM(id) {
+  const el = document.getElementById(id); if(!el) return;
+  const lvls = ['','l1','l2','l3','l4'];
+  for(let i=0;i<26*5;i++){
+    const c = document.createElement('div');
+    c.className = 'hc';
+    const r = Math.random();
+    if(r>.72) c.classList.add(lvls[Math.floor(Math.random()*4)+1]);
+    el.appendChild(c);
+  }
+}
+['pb','sn','ms','pm','dk','ssv','ssk','sa'].forEach(id => makeHM('hm-'+id));
+
+// Filter by role
+function applyFilter(role) {
+  const cards = document.querySelectorAll('.mcard');
+  let count = 0;
+  cards.forEach(card => {
+    const match = role === 'all' || card.dataset.role === role;
+    card.style.display = match ? '' : 'none';
+    if(match) count++;
+  });
+  document.getElementById('countTxt').textContent = count;
+}
+
+// Chips
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', function(){
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+    this.classList.add('on');
+    applyFilter(this.dataset.filter);
+  });
+});
+
+// Sidebar filter items
+document.querySelectorAll('.sb-item[data-filter]').forEach(item => {
+  item.addEventListener('click', function(){
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('on'));
+    this.classList.add('on');
+    applyFilter(this.dataset.filter);
+    // sync chips
+    document.querySelectorAll('.chip').forEach(c => {
+      c.classList.remove('on');
+      if(c.dataset.filter === this.dataset.filter) c.classList.add('on');
+    });
+  });
+});
+
+// Scroll reveal
+const obs = new IntersectionObserver(es => es.forEach(e => {
+  if(e.isIntersecting) e.target.classList.add('on');
+}), {threshold:0.07});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Animate skill bars on page load for visible cards
+setTimeout(()=>{
+  document.querySelectorAll('.sfill').forEach(f => {
+    // only the ones in currently visible (non-hidden) tabs
+    if(f.closest('.cbody').style.display !== 'none') f.classList.remove('init');
+  });
+}, 500);
+</script>
+</body>
+</html>

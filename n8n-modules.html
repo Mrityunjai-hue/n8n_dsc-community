@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N8N DSC · Learning Modules</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;700;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1a2e;
+  --canvas:#0f0f1a;
+  --surface:#1e1e30;
+  --card:#252538;
+  --border:#2e2e4a;
+  --border2:#3a3a5c;
+  --c:#e8eaf6;
+  --muted:#7878a8;
+  --dim:#4a4a6a;
+
+  /* tool colors */
+  --sql:#e44d26;
+  --py:#3776ab;
+  --xl:#217346;
+  --pbi:#f2c811;
+  --ml:#ff6b6b;
+  --sf:#29b5e8;
+
+  --green:#4ade80;
+  --wire:#334155;
+  --wire-glow:rgba(74,222,128,.25);
+  --node-shadow:0 8px 32px rgba(0,0,0,.6);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--canvas);
+  color:var(--c);
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+
+/* dot grid background — classic n8n canvas */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size:28px 28px;
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 30% 20%, rgba(74,222,128,.03) 0%, transparent 60%),
+             radial-gradient(ellipse at 80% 80%, rgba(55,118,171,.04) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+.wrap{position:relative;z-index:1;}
+
+/* ── NAV ── */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 36px;
+  border-bottom:1px solid var(--border);
+  background:rgba(15,15,26,0.95);
+  backdrop-filter:blur(16px);
+  position:sticky;top:0;z-index:200;
+}
+.nav-logo{font-family:'Fira Code',monospace;font-size:12px;color:var(--green);display:flex;align-items:center;gap:4px;}
+.nav-logo a{color:var(--muted);text-decoration:none;transition:color .2s;}
+.nav-logo a:hover{color:var(--green);}
+.nav-sep{color:var(--border2);margin:0 4px;}
+.nav-links{display:flex;gap:22px;font-family:'Fira Code',monospace;font-size:11px;}
+.nav-links a{color:var(--muted);text-decoration:none;transition:color .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--green);}
+.nav-right{
+  font-family:'Fira Code',monospace;font-size:10px;
+  background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);
+  color:var(--green);padding:5px 14px;border-radius:3px;
+  display:flex;align-items:center;gap:6px;
+}
+.live{width:6px;height:6px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 6px var(--green);animation:lp 2s ease-in-out infinite;}
+@keyframes lp{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+/* ── PAGE HERO ── */
+.hero{
+  padding:56px 36px 44px;
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.hero-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap;}
+.breadcrumb{font-family:'Fira Code',monospace;font-size:10px;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:5px;}
+.breadcrumb a{color:var(--muted);text-decoration:none;}
+.breadcrumb a:hover{color:var(--green);}
+.eyebrow{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'>>>';color:var(--muted);}
+.hero-title{font-family:'Instrument Serif',serif;font-size:clamp(2.2rem,4vw,3.6rem);font-weight:400;line-height:1.1;margin-bottom:10px;}
+.hero-title em{color:var(--green);font-style:italic;}
+.hero-sub{font-family:'Fira Code',monospace;font-size:11.5px;color:var(--muted);max-width:520px;line-height:1.9;}
+
+/* n8n-style execution stats */
+.exec-panel{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:18px 22px;font-family:'Fira Code',monospace;font-size:11px;
+  min-width:280px;display:flex;flex-direction:column;gap:10px;
+}
+.exec-row{display:flex;align-items:center;justify-content:space-between;}
+.exec-k{color:var(--muted);}
+.exec-v{color:var(--c);}
+.exec-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);
+  color:var(--green);padding:3px 10px;border-radius:100px;font-size:10px;
+}
+.exec-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);}
+
+/* ── TOOL SELECTOR TABS ── */
+.tool-tabs{
+  background:rgba(15,15,26,.95);
+  border-bottom:1px solid var(--border);
+  padding:0 36px;
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;
+  position:sticky;top:56px;z-index:150;
+}
+.ttab{
+  display:flex;align-items:center;gap:8px;
+  padding:14px 20px;
+  font-family:'Fira Code',monospace;font-size:11px;
+  color:var(--muted);cursor:pointer;
+  border-bottom:2px solid transparent;
+  white-space:nowrap;transition:all .2s;
+  border-right:1px solid var(--border);
+}
+.ttab:hover{color:var(--c);background:rgba(255,255,255,.03);}
+.ttab.on{color:var(--c);border-bottom-color:var(--green);background:rgba(74,222,128,.04);}
+.ttab-icon{
+  width:22px;height:22px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+  font-family:'Fira Code',monospace;
+}
+
+/* ── WORKFLOW CANVAS ── */
+.canvas-wrap{
+  padding:40px 20px 60px;
+  min-height:calc(100vh - 200px);
+  position:relative;
+}
+.canvas-inner{max-width:1340px;margin:0 auto;}
+
+/* workflow panel header */
+.wf-header{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:36px;
+  font-family:'Fira Code',monospace;
+}
+.wf-title{
+  font-size:13px;color:var(--c);font-weight:600;
+  display:flex;align-items:center;gap:10px;
+}
+.wf-title .wf-icon{
+  width:32px;height:32px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;
+}
+.wf-meta{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:14px;}
+.wf-meta span{display:flex;align-items:center;gap:5px;}
+.run-btn{
+  margin-left:auto;
+  background:var(--green);color:#0a0a14;
+  font-family:'Fira Code',monospace;font-size:11px;font-weight:700;
+  padding:8px 18px;border-radius:5px;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:6px;transition:all .2s;
+  box-shadow:0 0 20px rgba(74,222,128,.2);
+}
+.run-btn:hover{box-shadow:0 0 35px rgba(74,222,128,.4);transform:translateY(-1px);}
+
+/* ── THE ACTUAL WORKFLOW ── */
+.workflow{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  position:relative;
+}
+
+/* TRIGGER node */
+.trigger-node{
+  display:flex;justify-content:center;
+  margin-bottom:0;
+}
+.tnode{
+  background:var(--surface);
+  border:1.5px solid var(--border2);
+  border-radius:10px;
+  padding:14px 20px;
+  font-family:'Fira Code',monospace;font-size:11px;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:var(--node-shadow);
+  position:relative;
+  min-width:220px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.tnode:hover{border-color:rgba(74,222,128,.4);box-shadow:0 0 30px rgba(74,222,128,.1);}
+.tnode-icon{
+  width:34px;height:34px;border-radius:7px;
+  background:rgba(74,222,128,.15);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.tnode-label{font-size:12px;color:var(--c);font-weight:600;}
+.tnode-sub{font-size:9px;color:var(--muted);margin-top:2px;}
+
+/* vertical wire */
+.vwire{
+  width:2px;background:linear-gradient(to bottom,var(--border2),var(--border2));
+  margin:0 auto;position:relative;
+  transition:background .3s;
+}
+.vwire.active{background:linear-gradient(to bottom,var(--green),rgba(74,222,128,.3));}
+.vwire::after{
+  content:'';
+  position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
+  width:8px;height:8px;border-right:2px solid var(--border2);border-bottom:2px solid var(--border2);
+  transform:translateX(-50%) rotate(45deg);
+}
+.vwire.active::after{border-color:var(--green);}
+
+/* row of step nodes */
+.step-row{
+  display:flex;
+  justify-content:center;
+  gap:0;
+  position:relative;
+  margin:0;
+}
+
+/* horizontal connector */
+.hwire-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.hwire{
+  height:2px;width:40px;
+  background:var(--border2);
+  position:relative;flex-shrink:0;
+}
+.hwire.active{background:linear-gradient(90deg,rgba(74,222,128,.6),rgba(74,222,128,.3));}
+.hwire::after{
+  content:'';
+  position:absolute;right:-5px;top:50%;transform:translateY(-50%);
+  width:7px;height:7px;border-right:2px solid var(--border2);border-top:2px solid var(--border2);
+  transform:translateY(-50%) rotate(45deg);
+}
+.hwire.active::after{border-color:rgba(74,222,128,.8);}
+
+/* STEP NODE */
+.snode{
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+  min-width:170px;max-width:185px;
+  box-shadow:var(--node-shadow);
+  transition:all .25s;
+  cursor:pointer;
+  position:relative;
+  flex-shrink:0;
+}
+.snode:hover{transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.7);}
+.snode.done{border-color:rgba(74,222,128,.35);}
+.snode.done:hover{box-shadow:0 16px 50px rgba(74,222,128,.12);}
+.snode.current{border-color:rgba(74,222,128,.6);box-shadow:0 0 0 2px rgba(74,222,128,.15),var(--node-shadow);}
+.snode.locked{border-color:var(--border);opacity:.55;}
+
+/* node top bar */
+.sn-bar{
+  height:3px;width:100%;
+}
+/* node header */
+.sn-head{
+  padding:11px 13px 9px;
+  display:flex;align-items:flex-start;gap:10px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.sn-icon{
+  width:30px;height:30px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;font-family:'Fira Code',monospace;
+  flex-shrink:0;
+}
+.sn-info{}
+.sn-name{font-family:'Fira Code',monospace;font-size:11px;font-weight:600;color:var(--c);line-height:1.2;}
+.sn-type{font-size:9px;color:var(--muted);margin-top:2px;font-family:'Fira Code',monospace;}
+
+/* node body */
+.sn-body{padding:10px 13px;}
+.sn-topics{display:flex;flex-direction:column;gap:4px;}
+.sn-topic{
+  font-family:'Fira Code',monospace;font-size:9.5px;color:var(--muted);
+  display:flex;align-items:center;gap:5px;
+}
+.sn-topic::before{content:'·';color:var(--dim);}
+.sn-topic.done-t{color:rgba(74,222,128,.8);}
+.sn-topic.done-t::before{content:'✓';color:var(--green);}
+.sn-topic.cur-t{color:var(--c);}
+.sn-topic.cur-t::before{content:'▶';color:var(--green);}
+
+/* node footer */
+.sn-foot{
+  padding:7px 13px;
+  border-top:1px solid rgba(255,255,255,.04);
+  display:flex;align-items:center;gap:6px;
+  font-family:'Fira Code',monospace;font-size:9px;color:var(--dim);
+}
+.sn-status{
+  margin-left:auto;
+  padding:2px 7px;border-radius:100px;font-size:8.5px;
+}
+.st-done{background:rgba(74,222,128,.12);color:var(--green);}
+.st-active{background:rgba(255,159,67,.12);color:#ff9f43;animation:pulse-a 2s ease-in-out infinite;}
+@keyframes pulse-a{0%,100%{opacity:1;}50%{opacity:.5;}}
+.st-locked{background:rgba(255,255,255,.06);color:var(--dim);}
+
+/* execution counter badge */
+.exec-num{
+  position:absolute;top:-8px;right:-8px;
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fira Code',monospace;font-size:8px;font-weight:700;
+  border:1.5px solid var(--canvas);
+}
+
+/* SECTION row label */
+.section-label-row{
+  display:flex;justify-content:center;
+  margin:8px 0 0;
+}
+.slabel{
+  font-family:'Fira Code',monospace;font-size:9px;
+  color:var(--muted);letter-spacing:2px;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.slabel::before,.slabel::after{content:'';flex:1;width:30px;height:1px;background:var(--border);}
+
+/* ── OUTPUT / RESULT NODE ── */
+.result-node-wrap{display:flex;justify-content:center;margin-top:0;}
+.result-node{
+  background:var(--surface);border:1.5px solid rgba(74,222,128,.3);
+  border-radius:10px;padding:14px 24px;
+  font-family:'Fira Code',monospace;font-size:11px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:0 0 30px rgba(74,222,128,.08),var(--node-shadow);
+  min-width:280px;
+}
+.result-icon{font-size:22px;}
+.result-label{color:var(--green);font-weight:600;font-size:12px;}
+.result-sub{font-size:9px;color:var(--muted);margin-top:3px;}
+
+/* ── DETAIL PANEL (slides in on node click) ── */
+.detail-panel{
+  position:fixed;right:0;top:0;bottom:0;
+  width:380px;
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  z-index:500;
+  transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+  box-shadow:-20px 0 60px rgba(0,0,0,.5);
+}
+.detail-panel.open{transform:translateX(0);}
+.dp-head{
+  padding:20px 22px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;background:var(--surface);z-index:1;
+}
+.dp-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;font-family:'Fira Code',monospace;flex-shrink:0;}
+.dp-title{font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;color:var(--c);}
+.dp-sub{font-family:'Fira Code',monospace;font-size:10px;color:var(--muted);margin-top:2px;}
+.dp-close{
+  margin-left:auto;background:transparent;border:none;
+  color:var(--muted);font-size:18px;cursor:pointer;
+  width:30px;height:30px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.dp-close:hover{background:rgba(255,255,255,.06);color:var(--c);}
+.dp-body{padding:20px 22px;}
+.dp-section{margin-bottom:22px;}
+.dp-sh{
+  font-family:'Fira Code',monospace;font-size:9px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--green);
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.dp-sh::before{content:'#';color:var(--muted);}
+.dp-desc{font-size:13px;color:var(--muted);line-height:1.8;font-family:'DM Sans',sans-serif;}
+.dp-steps{display:flex;flex-direction:column;gap:8px;}
+.dp-step{
+  background:var(--card);border:1px solid var(--border);border-radius:7px;
+  padding:11px 14px;font-family:'Fira Code',monospace;font-size:11px;
+}
+.dp-step-num{font-size:9px;color:var(--muted);margin-bottom:4px;}
+.dp-step-name{color:var(--c);font-weight:600;margin-bottom:3px;}
+.dp-step-topics{display:flex;flex-direction:column;gap:2px;}
+.dp-topic{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+.dp-topic::before{content:'→';color:var(--dim);}
+.dp-code{
+  background:#0d0f14;border:1px solid var(--border);border-radius:6px;
+  padding:14px;font-family:'Fira Code',monospace;font-size:11px;
+  line-height:1.8;margin-top:8px;
+}
+.kw{color:#ff79c6;}.fn{color:#50fa7b;}.st{color:#f1fa8c;}.cm{color:#5a6080;font-style:italic;}.vr{color:#8be9fd;}.nu{color:#bd93f9;}
+.dp-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.dp-tag{
+  font-family:'Fira Code',monospace;font-size:9.5px;
+  padding:3px 10px;border-radius:100px;
+  border:1px solid var(--border2);color:var(--muted);
+}
+
+/* overlay */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.4);
+  z-index:499;opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.overlay.on{opacity:1;pointer-events:all;}
+
+/* scroll reveal */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.on{opacity:1;transform:none;}
+
+/* workflow section hidden by default */
+.wf-section{display:none;}
+.wf-section.active{display:block;}
+
+/* animated wires when section active */
+@keyframes wireFlow{
+  0%{stroke-dashoffset:1000;}
+  100%{stroke-dashoffset:0;}
+}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--surface);border-top:1px solid var(--border);
+  padding:20px 36px;font-family:'Fira Code',monospace;font-size:11px;
+  color:var(--muted);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+footer a{color:var(--green);text-decoration:none;}
+
+@media(max-width:900px){
+  .detail-panel{width:100%;}
+  nav{padding:12px 16px;}
+  .nav-links{display:none;}
+  .tool-tabs{padding:0 16px;}
+  .hero{padding:40px 16px 30px;}
+  .canvas-wrap{padding:24px 10px 40px;}
+  .step-row{flex-wrap:wrap;justify-content:center;gap:14px;}
+  .hwire-wrap{display:none;}
+  .wf-header{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-panel" id="detailPanel">
+  <div class="dp-head">
+    <div class="dp-icon" id="dpIcon"></div>
+    <div>
+      <div class="dp-title" id="dpTitle"></div>
+      <div class="dp-sub" id="dpSub"></div>
+    </div>
+    <button class="dp-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="dp-body" id="dpBody"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <a href="n8n-community.html">n8n_community</a>
+    <span class="nav-sep">/</span>
+    <span style="color:var(--c)">modules.flow</span>
+  </div>
+  <div class="nav-links">
+    <a href="n8n-community.html#about">overview</a>
+    <a href="#" class="active">modules</a>
+    <a href="n8n-team.html">team</a>
+    <a href="n8n-community.html#join">join()</a>
+  </div>
+  <div class="nav-right"><div class="live"></div>6 workflows · active</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="reveal">
+      <div class="breadcrumb">
+        <a href="n8n-community.html">n8n_community</a>
+        <span style="color:var(--border2)">/</span>
+        <span style="color:var(--green)">modules.flow</span>
+      </div>
+      <div class="eyebrow">learning_pipeline.execute()</div>
+      <h1 class="hero-title">Structured like an <em>n8n workflow</em>.<br>Built for real learning.</h1>
+      <p class="hero-sub">Each tool is a workflow. Each concept is a node. Nodes connect sequentially — you don't skip steps, you complete them. Click any node to open its detail panel.</p>
+    </div>
+    <div class="exec-panel reveal">
+      <div class="exec-row"><span class="exec-k">workflow_name</span><span class="exec-v">N8N Learning Pipeline</span></div>
+      <div class="exec-row"><span class="exec-k">total_workflows</span><span class="exec-v" style="color:var(--green)">6</span></div>
+      <div class="exec-row"><span class="exec-k">total_nodes</span><span class="exec-v" style="color:var(--green)">38+</span></div>
+      <div class="exec-row"><span class="exec-k">execution_mode</span><span class="exec-v">sequential</span></div>
+      <div class="exec-row"><span class="exec-k">status</span><span class="exec-badge">running</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOL TABS -->
+<div class="tool-tabs">
+  <div class="ttab on" data-wf="sql" onclick="switchWF(this,'sql')">
+    <div class="ttab-icon" style="background:rgba(228,77,38,.15);color:var(--sql)">SQL</div>
+    SQL
+  </div>
+  <div class="ttab" data-wf="py" onclick="switchWF(this,'py')">
+    <div class="ttab-icon" style="background:rgba(55,118,171,.15);color:var(--py)">Py</div>
+    Python
+  </div>
+  <div class="ttab" data-wf="xl" onclick="switchWF(this,'xl')">
+    <div class="ttab-icon" style="background:rgba(33,115,70,.15);color:var(--xl)">XL</div>
+    Excel
+  </div>
+  <div class="ttab" data-wf="pbi" onclick="switchWF(this,'pbi')">
+    <div class="ttab-icon" style="background:rgba(242,200,17,.12);color:var(--pbi)">PBI</div>
+    Power BI
+  </div>
+  <div class="ttab" data-wf="ml" onclick="switchWF(this,'ml')">
+    <div class="ttab-icon" style="background:rgba(255,107,107,.12);color:var(--ml)">ML</div>
+    Machine Learning
+  </div>
+  <div class="ttab" data-wf="sf" onclick="switchWF(this,'sf')">
+    <div class="ttab-icon" style="background:rgba(41,181,232,.12);color:var(--sf)">❄</div>
+    Snowflake
+  </div>
+</div>
+
+<!-- CANVAS -->
+<div class="canvas-wrap">
+  <div class="canvas-inner">
+
+    <!-- ══════════ SQL WORKFLOW ══════════ -->
+    <div class="wf-section active reveal" id="wf-sql">
+      <div class="wf-header">
+        <div class="wf-title">
+          <div class="wf-icon" style="background:rgba(228,77,38,.15);color:var(--sql)">SQL</div>
+          sql_mastery.workflow
+        </div>
+        <div class="wf-meta">
+          <span>⬡ 7 nodes</span>
+          <span>⏱ ~8 weeks</span>
+          <span style="color:var(--green)">● active</span>
+        </div>
+        <button class="run-btn">▶ Run Workflow</button>
+      </div>
+
+      <div class="workflow">
+        <!-- TRIGGER -->
+        <div class="trigger-node">
+          <div class="tnode" style="border-color:rgba(228,77,38,.4);">
+            <div class="tnode-icon" style="background:rgba(228,77,38,.15)">⚡</div>
+            <div><div class="tnode-label">SQL Trigger</div><div class="tnode-sub">When: student.enrolls("SQL")</div></div>
+            <div class="exec-num" style="background:var(--sql);color:#fff">1</div>
+          </div>
+        </div>
+        <div class="vwire active" style="height:36px"></div>
+
+        <!-- ROW 1 -->
+        <div class="step-row">
+          <div class="snode done" onclick="openPanel('DQL','SQL','DQL — Data Query Language','The foundation of SQL. Master SELECT before anything else.',['SELECT *','SELECT columns','WHERE conditions','ORDER BY','LIMIT / OFFSET','Aliases'],['SELECT','FROM','WHERE','ORDER BY','LIMIT','DISTINCT','AS'],'sql','SELECT name, score\nFROM students\nWHERE score > 80\nORDER BY score DESC\nLIMIT 10;','done')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,var(--sql),#ff8c69)"></div>
+            <div class="sn-head">
+              <div class="sn-icon" style="background:rgba(228,77,38,.15);color:var(--sql)">DQL</div>
+              <div class="sn-info"><div class="sn-name">DQL</div><div class="sn-type">Data Query Language</div></div>
+            </div>
+            <div class="sn-body"><div class="sn-topics">
+              <div class="sn-topic done-t">SELECT statements</div>
+              <div class="sn-topic done-t">WHERE & filters</div>
+              <div class="sn-topic done-t">ORDER BY, LIMIT</div>
+            </div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-done">✓ done</span></div>
+            <div class="exec-num" style="background:var(--green);color:#000">2</div>
+          </div>
+
+          <div class="hwire-wrap"><div class="hwire active"></div></div>
+
+          <div class="snode done" onclick="openPanel('DML','SQL','DML — Data Manipulation Language','Create, update, and delete real data. The write-side of SQL.',['INSERT INTO','UPDATE SET','DELETE FROM','UPSERT patterns','Bulk inserts','Transactions with DML'],'sql','INSERT INTO students (name, score)\nVALUES (\'Prakhar\', 95);\n\nUPDATE students\nSET score = 98\nWHERE name = \'Prakhar\';\n\nDELETE FROM students\nWHERE score < 40;','done')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,#e44d26,#ff6b4a)"></div>
+            <div class="sn-head">
+              <div class="sn-icon" style="background:rgba(228,77,38,.15);color:var(--sql)">DML</div>
+              <div class="sn-info"><div class="sn-name">DML</div><div class="sn-type">Data Manipulation Language</div></div>
+            </div>
+            <div class="sn-body"><div class="sn-topics">
+              <div class="sn-topic done-t">INSERT INTO</div>
+              <div class="sn-topic done-t">UPDATE & DELETE</div>
+              <div class="sn-topic done-t">Bulk operations</div>
+            </div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-done">✓ done</span></div>
+            <div class="exec-num" style="background:var(--green);color:#000">3</div>
+          </div>
+
+          <div class="hwire-wrap"><div class="hwire active"></div></div>
+
+          <div class="snode current" onclick="openPanel('DDL','SQL','DDL — Data Definition Language','Design and define your database schema. Tables, constraints, indexes.',['CREATE TABLE','ALTER TABLE','DROP / TRUNCATE','Constraints (PK, FK, UNIQUE)','Indexes','Schema design'],'sql','CREATE TABLE projects (\n  id INT PRIMARY KEY,\n  name VARCHAR(100) NOT NULL,\n  lead_id INT,\n  FOREIGN KEY (lead_id)\n    REFERENCES members(id)\n);\n\nALTER TABLE projects\nADD COLUMN status VARCHAR(20);','active')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,#ff9f43,#ffbe76)"></div>
+            <div class="sn-head">
+              <div class="sn-icon" style="background:rgba(255,159,67,.15);color:var(--orange)">DDL</div>
+              <div class="sn-info"><div class="sn-name">DDL</div><div class="sn-type">Data Definition Language</div></div>
+            </div>
+            <div class="sn-body"><div class="sn-topics">
+              <div class="sn-topic done-t">CREATE TABLE</div>
+              <div class="sn-topic cur-t">ALTER & constraints</div>
+              <div class="sn-topic">Indexes</div>
+            </div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-active">▶ active</span></div>
+            <div class="exec-num" style="background:#ff9f43;color:#000">4</div>
+          </div>
+        </div>
+
+        <div class="section-label-row"><div class="slabel">phase 2 · advanced</div></div>
+        <div class="vwire" style="height:32px"></div>
+
+        <!-- ROW 2 -->
+        <div class="step-row">
+          <div class="snode locked" onclick="openPanel('TCL','SQL','TCL — Transaction Control Language','Control database transactions. ACID properties. Rollback & commit.',['BEGIN / COMMIT','ROLLBACK','SAVEPOINT','ACID properties','Isolation levels','Deadlock handling'],'sql','BEGIN;\n\nUPDATE accounts\nSET balance = balance - 500\nWHERE id = 1;\n\nUPDATE accounts\nSET balance = balance + 500\nWHERE id = 2;\n\nCOMMIT; -- or ROLLBACK;','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head">
+              <div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">TCL</div>
+              <div class="sn-info"><div class="sn-name" style="color:var(--muted)">TCL</div><div class="sn-type">Transaction Control</div></div>
+            </div>
+            <div class="sn-body"><div class="sn-topics">
+              <div class="sn-topic">COMMIT / ROLLBACK</div>
+              <div class="sn-topic">ACID properties</div>
+              <div class="sn-topic">Isolation levels</div>
+            </div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+
+          <div class="snode locked" onclick="openPanel('DCL','SQL','DCL — Data Control Language','Manage user permissions and roles in your database.',['GRANT permissions','REVOKE access','User roles','Row-level security','Schema privileges','Audit & compliance'],'sql','-- Grant read access\nGRANT SELECT ON students\nTO analyst_role;\n\n-- Revoke write access\nREVOKE INSERT, UPDATE\nON students FROM intern;\n\n-- Create role\nCREATE ROLE data_scientist;','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head">
+              <div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">DCL</div>
+              <div class="sn-info"><div class="sn-name" style="color:var(--muted)">DCL</div><div class="sn-type">Data Control Language</div></div>
+            </div>
+            <div class="sn-body"><div class="sn-topics">
+              <div class="sn-topic">GRANT & REVOKE</div>
+              <div class="sn-topic">User roles</div>
+              <div class="sn-topic">Permissions</div>
+            </div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+
+          <div class="snode locked" onclick="openPanel('Joins & Aggregations','SQL','Joins & Aggregations','The power moves of SQL — combining tables and summarising data.',['INNER / LEFT / RIGHT JOIN','FULL OUTER JOIN','Self joins','GROUP BY & HAVING','Window functions','ROLLUP & CUBE'],'sql','-- Window function\nSELECT name,\n  score,\n  RANK() OVER (\n    PARTITION BY batch\n    ORDER BY score DESC\n  ) AS rank\nFROM students;\n\n-- Aggregation\nSELECT batch, AVG(score)\nFROM students\nGROUP BY batch\nHAVING AVG(score) > 75;','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head">
+              <div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">JN</div>
+              <div class="sn-info"><div class="sn-name" style="color:var(--muted)">Joins & Agg.</div><div class="sn-type">Advanced Queries</div></div>
+            </div>
+            <div class="sn-body"><div class="sn-topics">
+              <div class="sn-topic">All JOIN types</div>
+              <div class="sn-topic">GROUP BY & HAVING</div>
+              <div class="sn-topic">Window functions</div>
+            </div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+
+          <div class="snode locked" onclick="openPanel('Advanced SQL','SQL','Advanced SQL Patterns','Subqueries, CTEs, stored procedures, and performance tuning.',['Subqueries & CTEs','Stored Procedures','Triggers','Query optimisation','EXPLAIN / ANALYZE','Partitioning'],'sql','-- CTE example\nWITH top_students AS (\n  SELECT name, score\n  FROM students\n  WHERE score > 85\n)\nSELECT t.name,\n  p.project_name\nFROM top_students t\nJOIN projects p\n  ON t.id = p.lead_id;','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head">
+              <div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">ADV</div>
+              <div class="sn-info"><div class="sn-name" style="color:var(--muted)">Advanced SQL</div><div class="sn-type">CTEs · Procs · Perf</div></div>
+            </div>
+            <div class="sn-body"><div class="sn-topics">
+              <div class="sn-topic">CTEs & subqueries</div>
+              <div class="sn-topic">Stored procedures</div>
+              <div class="sn-topic">Query optimisation</div>
+            </div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+        </div>
+
+        <div class="vwire" style="height:36px"></div>
+        <div class="result-node-wrap">
+          <div class="result-node">
+            <div class="result-icon">🎓</div>
+            <div><div class="result-label">SQL Certification Ready</div><div class="result-sub">output: sql_proficient = True · portfolio projects unlocked</div></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /sql -->
+
+    <!-- ══════════ PYTHON WORKFLOW ══════════ -->
+    <div class="wf-section reveal" id="wf-py">
+      <div class="wf-header">
+        <div class="wf-title">
+          <div class="wf-icon" style="background:rgba(55,118,171,.15);color:var(--py)">Py</div>
+          python_for_ds.workflow
+        </div>
+        <div class="wf-meta"><span>⬡ 7 nodes</span><span>⏱ ~10 weeks</span><span style="color:var(--green)">● active</span></div>
+        <button class="run-btn" style="background:var(--py)">▶ Run Workflow</button>
+      </div>
+      <div class="workflow">
+        <div class="trigger-node">
+          <div class="tnode" style="border-color:rgba(55,118,171,.4)">
+            <div class="tnode-icon" style="background:rgba(55,118,171,.15)">⚡</div>
+            <div><div class="tnode-label">Python Trigger</div><div class="tnode-sub">When: student.enrolls("Python")</div></div>
+          </div>
+        </div>
+        <div class="vwire active" style="height:36px;background:linear-gradient(to bottom,var(--py),rgba(55,118,171,.3))"></div>
+        <div class="step-row">
+          <div class="snode done" onclick="openPanel('Python Basics','Python','Python Fundamentals','Variables, data types, control flow — the absolute foundation.',['Variables & types','Lists, dicts, tuples','if/else, loops','Functions & scope','List comprehensions','File I/O'],'py','# N8N style — pipeline begins\nstudents = [\"Prakhar\",\"Shrey\",\"Devesh\"]\n\nskills = {\n  student: [] \n  for student in students\n}\n\ndef enroll(name, skill):\n  skills[name].append(skill)\n  return f\"{name} enrolled in {skill}\"\n\nenroll(\"Prakhar\", \"ML\")','done')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,var(--py),#5ba3d9)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(55,118,171,.15);color:var(--py)">PY</div><div class="sn-info"><div class="sn-name">Basics</div><div class="sn-type">Python Fundamentals</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">Variables & types</div><div class="sn-topic done-t">Control flow</div><div class="sn-topic done-t">Functions</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-done">✓ done</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire active" style="background:linear-gradient(90deg,rgba(55,118,171,.6),rgba(55,118,171,.3))"></div></div>
+          <div class="snode done" onclick="openPanel('NumPy','Python','NumPy — Numerical Computing','Arrays, broadcasting, linear algebra — the backbone of scientific Python.',['ndarray creation','Indexing & slicing','Broadcasting rules','Math operations','Linear algebra','Random module'],'py','import numpy as np\n\n# N8N node: data transform\nscores = np.array([85,92,78,95,88])\n\nprint(f\"mean: {scores.mean():.1f}\")\nprint(f\"std:  {scores.std():.1f}\")\nprint(f\"top:  {scores.max()}\")\n\n# Matrix operations\nA = np.random.randn(3,3)\nnp.linalg.eigvals(A)','done')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,#4b8bbe,#5ba3d9)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(55,118,171,.15);color:var(--py)">NP</div><div class="sn-info"><div class="sn-name">NumPy</div><div class="sn-type">Numerical Computing</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">Arrays & indexing</div><div class="sn-topic done-t">Broadcasting</div><div class="sn-topic done-t">Linear algebra</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-done">✓ done</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire active" style="background:linear-gradient(90deg,rgba(55,118,171,.6),rgba(55,118,171,.3))"></div></div>
+          <div class="snode current" onclick="openPanel('Pandas','Python','Pandas — Data Manipulation','DataFrames, Series, groupby, merge — the workhorse of data science.',['Series & DataFrame','read_csv / read_sql','loc, iloc, query','groupby & agg','merge & join','apply & lambda'],'py','import pandas as pd\n\n# Load data\ndf = pd.read_csv(\"n8n_members.csv\")\n\n# Transform node\ndf[\"skill_avg\"] = df[\n  [\"ml\",\"dl\",\"analytics\"]\n].mean(axis=1)\n\n# Filter\ntop = df.query(\n  \"skill_avg > 8\"\n).sort_values(\"skill_avg\",\n  ascending=False\n)','active')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,#130654,#5ba3d9)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(55,118,171,.15);color:var(--py)">PD</div><div class="sn-info"><div class="sn-name">Pandas</div><div class="sn-type">Data Manipulation</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">DataFrame ops</div><div class="sn-topic cur-t">groupby & merge</div><div class="sn-topic">apply & advanced</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-active">▶ active</span></div>
+          </div>
+        </div>
+        <div class="section-label-row"><div class="slabel">phase 2 · visualisation & oop</div></div>
+        <div class="vwire" style="height:32px"></div>
+        <div class="step-row">
+          <div class="snode locked" onclick="openPanel('Matplotlib & Seaborn','Python','Data Visualisation','Plot, style and communicate your data stories.',['plt basics','Subplots','Seaborn heatmaps','Distribution plots','Customisation','Export & sharing'],'py','import matplotlib.pyplot as plt\nimport seaborn as sns\n\nfig, axes = plt.subplots(1,2,\n  figsize=(12,5))\n\n# Distribution\naxes[0].hist(scores, bins=15,\n  color=\"#3dd68c\", alpha=.8)\n\n# Heatmap\nsns.heatmap(corr_matrix,\n  cmap=\"viridis\",\n  ax=axes[1])\n\nplt.tight_layout()','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">VIZ</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">Visualisation</div><div class="sn-type">Matplotlib · Seaborn</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">plt basics & subplots</div><div class="sn-topic">Seaborn heatmaps</div><div class="sn-topic">Styling & export</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+          <div class="snode locked" onclick="openPanel('OOP & Modules','Python','OOP & Packaging','Write production-grade Python with classes, modules, and packages.',['Classes & objects','Inheritance','Decorators','Modules & __init__','Virtual environments','requirements.txt'],'py','class DataPipeline:\n  def __init__(self, name):\n    self.name = name\n    self.steps = []\n\n  def add_node(self, fn):\n    self.steps.append(fn)\n    return self  # chaining!\n\n  def run(self, data):\n    for step in self.steps:\n      data = step(data)\n    return data\n\n# n8n style chaining\npipeline = (\n  DataPipeline(\"N8N\")\n  .add_node(clean)\n  .add_node(transform)\n  .add_node(model)\n)','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">OOP</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">OOP & Modules</div><div class="sn-type">Production Python</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">Classes & inheritance</div><div class="sn-topic">Decorators</div><div class="sn-topic">Packaging</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+          <div class="snode locked" onclick="openPanel('APIs & Automation','Python','APIs, Web Scraping & Automation','Connect Python to the real world — APIs, scraping, automation.',['requests library','REST API calls','BeautifulSoup','Selenium basics','Schedule & cron','Data pipelines'],'py','import requests\n\n# Hit an API node\nr = requests.get(\n  \"https://api.example.com/data\",\n  headers={\"Authorization\":\"Bearer ...\"},\n  params={\"limit\": 100}\n)\n\ndf = pd.DataFrame(r.json())\n\n# Automate pipeline\nimport schedule\nschedule.every().day.at(\"09:00\").do(\n  run_pipeline\n)','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">API</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">APIs & Auto.</div><div class="sn-type">Real-world Python</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">requests & REST</div><div class="sn-topic">Web scraping</div><div class="sn-topic">Automation</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+        </div>
+        <div class="vwire" style="height:36px"></div>
+        <div class="result-node-wrap">
+          <div class="result-node" style="border-color:rgba(55,118,171,.4);box-shadow:0 0 30px rgba(55,118,171,.08)">
+            <div class="result-icon">🐍</div>
+            <div><div class="result-label" style="color:var(--py)">Python for DS · Complete</div><div class="result-sub">output: ds_python_ready = True · Kaggle workflows unlocked</div></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /py -->
+
+    <!-- ══════════ EXCEL WORKFLOW ══════════ -->
+    <div class="wf-section reveal" id="wf-xl">
+      <div class="wf-header">
+        <div class="wf-title"><div class="wf-icon" style="background:rgba(33,115,70,.15);color:var(--xl)">XL</div>excel_analytics.workflow</div>
+        <div class="wf-meta"><span>⬡ 5 nodes</span><span>⏱ ~5 weeks</span><span style="color:var(--green)">● active</span></div>
+        <button class="run-btn" style="background:var(--xl)">▶ Run Workflow</button>
+      </div>
+      <div class="workflow">
+        <div class="trigger-node"><div class="tnode" style="border-color:rgba(33,115,70,.4)"><div class="tnode-icon" style="background:rgba(33,115,70,.15)">⚡</div><div><div class="tnode-label">Excel Trigger</div><div class="tnode-sub">When: student.enrolls("Excel")</div></div></div></div>
+        <div class="vwire active" style="height:36px;background:linear-gradient(to bottom,var(--xl),rgba(33,115,70,.3))"></div>
+        <div class="step-row">
+          <div class="snode done" onclick="openPanel('Excel Basics','Excel','Excel Fundamentals','Cells, formulas, formatting — the starting point for every analyst.',['Cell referencing','Basic formulas','SUM/AVERAGE/COUNT','IF statements','Formatting & tables','Data entry best practices'],'excel','// Basic formula node\n=SUM(B2:B100)\n=AVERAGE(C2:C50)\n=IF(D2>80, \"Pass\", \"Fail\")\n=COUNTIF(E2:E100, \">0\")\n\n// Absolute reference\n=$B$1 * C2\n\n// Named ranges\n=SUM(scores)','done')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,var(--xl),#2ecc71)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(33,115,70,.15);color:var(--xl)">B</div><div class="sn-info"><div class="sn-name">Basics</div><div class="sn-type">Core Excel</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">Formulas & refs</div><div class="sn-topic done-t">IF logic</div><div class="sn-topic done-t">Tables</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-done">✓ done</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire active" style="background:linear-gradient(90deg,rgba(33,115,70,.6),rgba(33,115,70,.3))"></div></div>
+          <div class="snode current" onclick="openPanel('Advanced Formulas','Excel','Advanced Formulas & Lookups','VLOOKUP, INDEX-MATCH, dynamic arrays — the power user toolkit.',['VLOOKUP & HLOOKUP','INDEX + MATCH','XLOOKUP (modern)','Dynamic arrays','UNIQUE & FILTER','Array formulas'],'excel','// VLOOKUP node\n=VLOOKUP(A2, members!A:D, 3, FALSE)\n\n// INDEX-MATCH (better!)\n=INDEX(C:C,\n  MATCH(A2, A:A, 0)\n)\n\n// XLOOKUP (modern)\n=XLOOKUP(A2, A:A, D:D,\n  \"Not found\"\n)\n\n// Dynamic spill\n=UNIQUE(roles)','active')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,#1e8449,#27ae60)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(33,115,70,.15);color:var(--xl)">LK</div><div class="sn-info"><div class="sn-name">Lookups</div><div class="sn-type">Advanced Formulas</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">VLOOKUP</div><div class="sn-topic cur-t">INDEX-MATCH</div><div class="sn-topic">XLOOKUP</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-active">▶ active</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+          <div class="snode locked" onclick="openPanel('Pivot Tables','Excel','Pivot Tables & Charts','Summarise thousands of rows in seconds. The analyst superpower.',['Pivot table basics','Grouping & filtering','Calculated fields','Pivot charts','Slicers','Power Pivot intro'],'excel','// Pivot config node (pseudo)\npivot_table(\n  data = sales_data,\n  rows = [\"region\", \"rep\"],\n  columns = [\"quarter\"],\n  values = [\"revenue\"],\n  aggfunc = \"SUM\",\n  margins = True  // Grand totals\n)\n\n// Add slicer on \"product\"','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">PV</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">Pivot Tables</div><div class="sn-type">Summarisation</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">Pivot basics</div><div class="sn-topic">Calculated fields</div><div class="sn-topic">Slicers & charts</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+          <div class="snode locked" onclick="openPanel('Excel Dashboards','Excel','Dashboards & Automation','Build interactive dashboards and automate with macros.',['Dashboard design','Dynamic charts','Form controls','VBA Macros basics','Power Query','Data validation'],'excel','// VBA macro node\nSub RunPipeline()\n  Dim ws As Worksheet\n  Set ws = Sheets(\"Data\")\n\n  \" Refresh pivot\n  ws.PivotTables(1).RefreshTable\n\n  \" Auto-format\n  With ws.Range(\"A1:Z1\")\n    .Interior.Color = RGB(33,115,70)\n    .Font.Bold = True\n  End With\nEnd Sub','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">DB</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">Dashboards</div><div class="sn-type">Design & Automation</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">Dashboard design</div><div class="sn-topic">VBA Macros</div><div class="sn-topic">Power Query</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+        </div>
+        <div class="vwire" style="height:36px"></div>
+        <div class="result-node-wrap"><div class="result-node" style="border-color:rgba(33,115,70,.4);box-shadow:0 0 30px rgba(33,115,70,.08)"><div class="result-icon">📊</div><div><div class="result-label" style="color:var(--xl)">Excel Analytics · Complete</div><div class="result-sub">output: excel_analyst = True · dashboard portfolio ready</div></div></div></div>
+      </div>
+    </div>
+
+    <!-- ══════════ POWER BI WORKFLOW ══════════ -->
+    <div class="wf-section reveal" id="wf-pbi">
+      <div class="wf-header">
+        <div class="wf-title"><div class="wf-icon" style="background:rgba(242,200,17,.1);color:var(--pbi)">PBI</div>powerbi_dashboard.workflow</div>
+        <div class="wf-meta"><span>⬡ 5 nodes</span><span>⏱ ~6 weeks</span><span style="color:var(--green)">● active</span></div>
+        <button class="run-btn" style="background:#c4a000;color:#000">▶ Run Workflow</button>
+      </div>
+      <div class="workflow">
+        <div class="trigger-node"><div class="tnode" style="border-color:rgba(242,200,17,.4)"><div class="tnode-icon" style="background:rgba(242,200,17,.12)">⚡</div><div><div class="tnode-label">Power BI Trigger</div><div class="tnode-sub">When: student.enrolls("PowerBI")</div></div></div></div>
+        <div class="vwire active" style="height:36px;background:linear-gradient(to bottom,var(--pbi),rgba(242,200,17,.3))"></div>
+        <div class="step-row">
+          <div class="snode done" onclick="openPanel('Data Import','Power BI','Data Import & Power Query','Connect to any data source and clean it with Power Query.',['Connect Excel/SQL/Web','Power Query editor','Data types','Remove/replace','Merge queries','Append queries'],'powerbi','// Power Query M code\nlet\n  Source = Csv.Document(\n    File.Contents(\"members.csv\")\n  ),\n  Promoted = Table.PromoteHeaders(\n    Source\n  ),\n  Filtered = Table.SelectRows(\n    Promoted,\n    each [role] <> null\n  )\nin\n  Filtered','done')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,var(--pbi),#ffdd57)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(242,200,17,.12);color:var(--pbi)">IMP</div><div class="sn-info"><div class="sn-name">Data Import</div><div class="sn-type">Power Query</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">Connect sources</div><div class="sn-topic done-t">Query editor</div><div class="sn-topic done-t">Merge & append</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-done">✓ done</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire active" style="background:linear-gradient(90deg,rgba(242,200,17,.6),rgba(242,200,17,.3))"></div></div>
+          <div class="snode current" onclick="openPanel('Data Modelling','Power BI','Data Modelling & Relationships','Build a proper star schema. Relationships, keys, and cardinality.',['Star schema','Define relationships','Cardinality','Bidirectional filters','Date table','Role-playing dimensions'],'powerbi','// DAX — Calculated column\nStudent_Level =\nSWITCH(\n  TRUE(),\n  members[skill_avg] >= 9, \"Expert\",\n  members[skill_avg] >= 7, \"Advanced\",\n  members[skill_avg] >= 5, \"Mid\",\n  \"Beginner\"\n)\n\n// Relationship: one-to-many\n// members[id] → projects[lead_id]','active')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,#d4ac00,#f2c811)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(242,200,17,.12);color:var(--pbi)">MDL</div><div class="sn-info"><div class="sn-name">Modelling</div><div class="sn-type">Relationships & Schema</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">Star schema</div><div class="sn-topic cur-t">Relationships</div><div class="sn-topic">Date tables</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-active">▶ active</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+          <div class="snode locked" onclick="openPanel('DAX','Power BI','DAX — Data Analysis Expressions','The formula language of Power BI. Measures, KPIs, time intelligence.',['Measures vs columns','CALCULATE & FILTER','ALL & ALLEXCEPT','Time intelligence','RANKX & TOPN','Variables in DAX'],'powerbi','// DAX Measure node\nMonthly_Revenue =\nCALCULATE(\n  SUM(sales[amount]),\n  DATESMTD(dates[date])\n)\n\nYoY_Growth =\nDIVIDE(\n  [Monthly_Revenue]\n    - CALCULATE([Monthly_Revenue],\n        SAMEPERIODLASTYEAR(dates[date])),\n  CALCULATE([Monthly_Revenue],\n    SAMEPERIODLASTYEAR(dates[date]))\n)','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">DAX</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">DAX</div><div class="sn-type">Measures & KPIs</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">CALCULATE & FILTER</div><div class="sn-topic">Time intelligence</div><div class="sn-topic">Variables</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+          <div class="snode locked" onclick="openPanel('Dashboards & Publishing','Power BI','Dashboards, Reports & Publishing','Design stunning reports and publish to Power BI Service.',['Report design principles','Visual best practices','Bookmarks & drill-through','Row-level security','Publish to Service','Schedule refresh'],'powerbi','// Report publish config\npbi_report.publish(\n  workspace = \"N8N DSC\",\n  dataset_refresh = \"daily\",\n  rls = {\n    \"analyst\": \"role = analyst\",\n    \"lead\":    \"role IN (lead, head)\"\n  },\n  schedule = {\n    \"time\": \"06:00 UTC\",\n    \"days\": [\"Mon\",\"Wed\",\"Fri\"]\n  }\n)','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">PUB</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">Dashboards</div><div class="sn-type">Design & Publishing</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">Report design</div><div class="sn-topic">Bookmarks & drill</div><div class="sn-topic">Publish & schedule</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+        </div>
+        <div class="vwire" style="height:36px"></div>
+        <div class="result-node-wrap"><div class="result-node" style="border-color:rgba(242,200,17,.4);box-shadow:0 0 30px rgba(242,200,17,.06)"><div class="result-icon">📈</div><div><div class="result-label" style="color:var(--pbi)">Power BI Analyst · Complete</div><div class="result-sub">output: powerbi_certified = True · live dashboards deployed</div></div></div></div>
+      </div>
+    </div>
+
+    <!-- ══════════ MACHINE LEARNING WORKFLOW ══════════ -->
+    <div class="wf-section reveal" id="wf-ml">
+      <div class="wf-header">
+        <div class="wf-title"><div class="wf-icon" style="background:rgba(255,107,107,.12);color:var(--ml)">ML</div>machine_learning.workflow</div>
+        <div class="wf-meta"><span>⬡ 6 nodes</span><span>⏱ ~12 weeks</span><span style="color:var(--green)">● active</span></div>
+        <button class="run-btn" style="background:var(--ml)">▶ Run Workflow</button>
+      </div>
+      <div class="workflow">
+        <div class="trigger-node"><div class="tnode" style="border-color:rgba(255,107,107,.4)"><div class="tnode-icon" style="background:rgba(255,107,107,.15)">⚡</div><div><div class="tnode-label">ML Trigger</div><div class="tnode-sub">When: student.enrolls("MachineLearning")</div></div></div></div>
+        <div class="vwire active" style="height:36px;background:linear-gradient(to bottom,var(--ml),rgba(255,107,107,.3))"></div>
+        <div class="step-row">
+          <div class="snode done" onclick="openPanel('ML Foundations','Machine Learning','ML Foundations & Maths','The mathematical bedrock — without this, models are black boxes.',['Linear algebra review','Statistics & probability','Gradient descent','Loss functions','Bias-variance tradeoff','Train/val/test split'],'python','import numpy as np\nfrom sklearn.model_selection \\\n  import train_test_split\n\n# The fundamental split\nX_train, X_test, y_train, y_test = \\\n  train_test_split(\n    X, y,\n    test_size=0.2,\n    random_state=42\n  )\n\nprint(f\"Train: {len(X_train)}\")\nprint(f\"Test:  {len(X_test)}\")','done')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,var(--ml),#ff8e8e)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,107,107,.15);color:var(--ml)">F</div><div class="sn-info"><div class="sn-name">Foundations</div><div class="sn-type">Maths & Stats</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">Linear algebra</div><div class="sn-topic done-t">Gradient descent</div><div class="sn-topic done-t">Bias-variance</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-done">✓ done</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire active" style="background:linear-gradient(90deg,rgba(255,107,107,.6),rgba(255,107,107,.3))"></div></div>
+          <div class="snode done" onclick="openPanel('Supervised Learning','Machine Learning','Supervised Learning','Regression and classification — the bread and butter of ML.',['Linear Regression','Logistic Regression','Decision Trees','Random Forest','SVM','Model evaluation'],'python','from sklearn.ensemble import \\\n  RandomForestClassifier\nfrom sklearn.metrics import \\\n  classification_report\n\n# Train node\nmodel = RandomForestClassifier(\n  n_estimators=100,\n  max_depth=5,\n  random_state=42\n)\nmodel.fit(X_train, y_train)\n\n# Evaluate\ny_pred = model.predict(X_test)\nprint(classification_report(\n  y_test, y_pred\n))','done')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,#e05555,#ff7070)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,107,107,.15);color:var(--ml)">SL</div><div class="sn-info"><div class="sn-name">Supervised</div><div class="sn-type">Regression & Classification</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">Linear/Logistic</div><div class="sn-topic done-t">Decision Trees</div><div class="sn-topic done-t">Random Forest</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-done">✓ done</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire active" style="background:linear-gradient(90deg,rgba(255,107,107,.6),rgba(255,107,107,.3))"></div></div>
+          <div class="snode current" onclick="openPanel('Unsupervised Learning','Machine Learning','Unsupervised Learning','Find hidden patterns — clustering, dimensionality reduction.',['K-Means clustering','DBSCAN','Hierarchical clustering','PCA','t-SNE / UMAP','Anomaly detection'],'python','from sklearn.cluster import KMeans\nfrom sklearn.decomposition import PCA\n\n# Cluster node\nkmeans = KMeans(\n  n_clusters=4,\n  random_state=42\n)\nlabels = kmeans.fit_predict(X)\n\n# Reduce for visualisation\npca = PCA(n_components=2)\nX_2d = pca.fit_transform(X)\n\nprint(f\"Explained variance: \"\n  f\"{pca.explained_variance_ratio_.sum():.2f}\")','active')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,#ff9f43,#ffbe76)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,159,67,.15);color:var(--orange)">UL</div><div class="sn-info"><div class="sn-name">Unsupervised</div><div class="sn-type">Clustering & PCA</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">K-Means</div><div class="sn-topic cur-t">PCA</div><div class="sn-topic">UMAP</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-active">▶ active</span></div>
+          </div>
+        </div>
+        <div class="section-label-row"><div class="slabel">phase 2 · advanced ML</div></div>
+        <div class="vwire" style="height:32px"></div>
+        <div class="step-row">
+          <div class="snode locked" onclick="openPanel('Feature Engineering','Machine Learning','Feature Engineering','Transform raw data into powerful features. Where the real magic happens.',['Handling missing values','Encoding categoricals','Feature scaling','Feature selection','Creating interactions','Target encoding'],'python','from sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import \\\n  StandardScaler, OneHotEncoder\nfrom sklearn.compose import \\\n  ColumnTransformer\n\n# Feature pipeline node\npreprocessor = ColumnTransformer([\n  (\"num\", StandardScaler(), num_cols),\n  (\"cat\", OneHotEncoder(), cat_cols)\n])\n\npipeline = Pipeline([\n  (\"prep\", preprocessor),\n  (\"model\", RandomForestClassifier())\n])','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">FE</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">Feature Eng.</div><div class="sn-type">Data Transformation</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">Encoding & scaling</div><div class="sn-topic">Feature selection</div><div class="sn-topic">Pipeline design</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+          <div class="snode locked" onclick="openPanel('Model Tuning','Machine Learning','Hyperparameter Tuning & Validation','Push model performance to its limits with systematic tuning.',['Cross-validation','GridSearchCV','RandomizedSearchCV','Optuna / Bayesian','Learning curves','Ensemble methods'],'python','from sklearn.model_selection import \\\n  GridSearchCV, cross_val_score\n\n# Tuning node\nparam_grid = {\n  \"n_estimators\": [100,200,300],\n  \"max_depth\":    [3, 5, 7, None],\n  \"min_samples_split\": [2, 5, 10]\n}\n\ngrid = GridSearchCV(\n  RandomForestClassifier(),\n  param_grid,\n  cv=5,\n  scoring=\"f1_weighted\",\n  n_jobs=-1\n)\ngrid.fit(X_train, y_train)\nprint(grid.best_params_)','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">HT</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">Model Tuning</div><div class="sn-type">Hyperparameters</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">Cross-validation</div><div class="sn-topic">GridSearch / Optuna</div><div class="sn-topic">Ensembles</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+          <div class="snode locked" onclick="openPanel('ML Deployment','Machine Learning','Model Deployment & MLOps','Take models from notebook to production.',['joblib / pickle','FastAPI serving','MLflow tracking','Docker basics','Model monitoring','CI/CD for ML'],'python','import mlflow\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n# Log experiment\nwith mlflow.start_run():\n  mlflow.log_params(grid.best_params_)\n  mlflow.log_metric(\"f1\", best_f1)\n  mlflow.sklearn.log_model(\n    model, \"model\"\n  )\n\n# Serve node\n@app.post(\"/predict\")\ndef predict(data: InputData):\n  return {\"prediction\":\n    model.predict(data.features)}','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">DEP</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">Deployment</div><div class="sn-type">MLOps · Production</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">FastAPI serving</div><div class="sn-topic">MLflow tracking</div><div class="sn-topic">Docker & CI/CD</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+        </div>
+        <div class="vwire" style="height:36px"></div>
+        <div class="result-node-wrap"><div class="result-node" style="border-color:rgba(255,107,107,.4);box-shadow:0 0 30px rgba(255,107,107,.08)"><div class="result-icon">🤖</div><div><div class="result-label" style="color:var(--ml)">ML Engineer · Complete</div><div class="result-sub">output: ml_production_ready = True · Kaggle competitions + deployment</div></div></div></div>
+      </div>
+    </div>
+
+    <!-- ══════════ SNOWFLAKE WORKFLOW ══════════ -->
+    <div class="wf-section reveal" id="wf-sf">
+      <div class="wf-header">
+        <div class="wf-title"><div class="wf-icon" style="background:rgba(41,181,232,.12);color:var(--sf)">❄</div>snowflake_datawarehouse.workflow</div>
+        <div class="wf-meta"><span>⬡ 5 nodes</span><span>⏱ ~6 weeks</span><span style="color:var(--green)">● active</span></div>
+        <button class="run-btn" style="background:var(--sf);color:#000">▶ Run Workflow</button>
+      </div>
+      <div class="workflow">
+        <div class="trigger-node"><div class="tnode" style="border-color:rgba(41,181,232,.4)"><div class="tnode-icon" style="background:rgba(41,181,232,.15)">⚡</div><div><div class="tnode-label">Snowflake Trigger</div><div class="tnode-sub">When: student.enrolls("Snowflake")</div></div></div></div>
+        <div class="vwire active" style="height:36px;background:linear-gradient(to bottom,var(--sf),rgba(41,181,232,.3))"></div>
+        <div class="step-row">
+          <div class="snode done" onclick="openPanel('Snowflake Basics','Snowflake','Snowflake Architecture & Setup','Understand the cloud data warehouse. Virtual warehouses, databases, schemas.',['Cloud DW concepts','Snowflake architecture','Virtual warehouses','Databases & schemas','Worksheet basics','Roles & users'],'sql','-- Snowflake setup node\nCREATE WAREHOUSE N8N_WH\n  WITH WAREHOUSE_SIZE = \"XSMALL\"\n  AUTO_SUSPEND = 60\n  AUTO_RESUME = TRUE;\n\nCREATE DATABASE N8N_DSC;\nCREATE SCHEMA N8N_DSC.LEARNING;\n\nUSE WAREHOUSE N8N_WH;\nUSE DATABASE N8N_DSC;','done')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,var(--sf),#62d9f5)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(41,181,232,.15);color:var(--sf)">❄</div><div class="sn-info"><div class="sn-name">Architecture</div><div class="sn-type">Setup & Concepts</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">Virtual warehouses</div><div class="sn-topic done-t">DB & schemas</div><div class="sn-topic done-t">Roles & users</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-done">✓ done</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire active" style="background:linear-gradient(90deg,rgba(41,181,232,.6),rgba(41,181,232,.3))"></div></div>
+          <div class="snode current" onclick="openPanel('Loading Data','Snowflake','Data Loading & Stages','Load data from S3, local files, and streams into Snowflake.',['Internal & external stages','COPY INTO','Snowpipe (streaming)','File formats','Data types','Loading from S3'],'sql','-- Stage node\nCREATE STAGE n8n_stage\n  FILE_FORMAT = (\n    TYPE = CSV\n    SKIP_HEADER = 1\n  );\n\n-- Load node\nCOPY INTO students\n  FROM @n8n_stage/students.csv\n  FILE_FORMAT = (TYPE = CSV)\n  ON_ERROR = CONTINUE;\n\nSELECT $1, $2 FROM @n8n_stage;','active')">
+            <div class="sn-bar" style="background:linear-gradient(90deg,#1a9fc5,#29b5e8)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(41,181,232,.15);color:var(--sf)">LD</div><div class="sn-info"><div class="sn-name">Data Loading</div><div class="sn-type">Stages & COPY INTO</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic done-t">Stages & COPY INTO</div><div class="sn-topic cur-t">Snowpipe</div><div class="sn-topic">File formats</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-active">▶ active</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+          <div class="snode locked" onclick="openPanel('Snowflake SQL','Snowflake','Advanced Snowflake SQL','Zero-copy cloning, time travel, streams, tasks — the Snowflake superpowers.',['Zero-copy cloning','Time travel','Streams & Tasks','Dynamic tables','Materialized views','Semi-structured (JSON)'],'sql','-- Time travel node\nSELECT * FROM students\n  AT (OFFSET => -3600);\n\n-- Zero-copy clone\nCREATE TABLE students_backup\n  CLONE students;\n\n-- Semi-structured JSON\nSELECT\n  v:name::STRING AS name,\n  v:skills[0]::STRING AS top_skill\nFROM raw_json_table;','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">SQL</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">Snowflake SQL</div><div class="sn-type">Advanced Features</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">Time travel</div><div class="sn-topic">Streams & Tasks</div><div class="sn-topic">Semi-structured data</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+          <div class="hwire-wrap"><div class="hwire"></div></div>
+          <div class="snode locked" onclick="openPanel('Snowpark & dbt','Snowflake','Snowpark Python & dbt Integration','Write Python inside Snowflake. Build transformation pipelines with dbt.',['Snowpark DataFrames','UDFs in Python','dbt models','dbt tests & docs','Incremental models','Orchestration'],'python','# Snowpark node\nfrom snowflake.snowpark import Session\n\nsession = Session.builder\\\n  .configs(connection_params)\\\n  .create()\n\ndf = session.table(\"students\")\nresult = df\\\n  .filter(col(\"score\") > 80)\\\n  .group_by(\"role\")\\\n  .agg(avg(\"score\").alias(\"avg\"))\n\nresult.write.save_as_table(\n  \"top_performers\"\n)','locked')">
+            <div class="sn-bar" style="background:var(--border)"></div>
+            <div class="sn-head"><div class="sn-icon" style="background:rgba(255,255,255,.06);color:var(--dim)">SP</div><div class="sn-info"><div class="sn-name" style="color:var(--muted)">Snowpark & dbt</div><div class="sn-type">Python + Transforms</div></div></div>
+            <div class="sn-body"><div class="sn-topics"><div class="sn-topic">Snowpark DataFrames</div><div class="sn-topic">dbt models</div><div class="sn-topic">Orchestration</div></div></div>
+            <div class="sn-foot">⬡ 6 topics<span class="sn-status st-locked">🔒 locked</span></div>
+          </div>
+        </div>
+        <div class="vwire" style="height:36px"></div>
+        <div class="result-node-wrap"><div class="result-node" style="border-color:rgba(41,181,232,.4);box-shadow:0 0 30px rgba(41,181,232,.06)"><div class="result-icon">❄️</div><div><div class="result-label" style="color:var(--sf)">Snowflake Data Engineer · Complete</div><div class="result-sub">output: cloud_dw_ready = True · production pipelines deployed</div></div></div></div>
+      </div>
+    </div>
+
+  </div><!-- /canvas-inner -->
+</div><!-- /canvas-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <span><a href="n8n-community.html">N8N Data Science Community</a> · HBTU Kanpur · Dept. of Mathematics</span>
+  <span style="display:flex;align-items:center;gap:8px;">
+    <span style="color:var(--dim)">workflows.status: <span style="color:var(--green)">all running</span></span>
+    <span style="color:var(--border2)">|</span>
+    <a href="https://discord.gg/J8uNurwr" target="_blank">discord.gg/J8uNurwr ↗</a>
+  </span>
+</footer>
+
+</div>
+
+<script>
+// ── TOOL TAB SWITCHER ──
+function switchWF(el, id) {
+  document.querySelectorAll('.ttab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.wf-section').forEach(s => s.classList.remove('active'));
+  el.classList.add('on');
+  const sec = document.getElementById('wf-' + id);
+  sec.classList.add('active');
+  // trigger reveal
+  setTimeout(() => {
+    sec.querySelectorAll('.reveal').forEach(r => {
+      r.classList.remove('on');
+      setTimeout(() => r.classList.add('on'), 50);
+    });
+  }, 30);
+}
+
+// ── NODE DETAIL PANEL ──
+const nodeData = {};
+
+function openPanel(title, tool, fullTitle, desc, topics, lang, code, status) {
+  document.getElementById('dpTitle').textContent = fullTitle;
+  document.getElementById('dpSub').textContent = tool + ' · ' + topics.length + ' topics';
+
+  // icon
+  const icons = {SQL:'SQL',Python:'Py',Excel:'XL','Power BI':'PBI','Machine Learning':'ML',Snowflake:'❄'};
+  const colors = {SQL:'rgba(228,77,38,.15)',Python:'rgba(55,118,171,.15)',Excel:'rgba(33,115,70,.15)','Power BI':'rgba(242,200,17,.12)','Machine Learning':'rgba(255,107,107,.15)',Snowflake:'rgba(41,181,232,.15)'};
+  const txtc = {SQL:'#e44d26',Python:'#3776ab',Excel:'#217346','Power BI':'#f2c811','Machine Learning':'#ff6b6b',Snowflake:'#29b5e8'};
+  const icon = document.getElementById('dpIcon');
+  icon.textContent = icons[tool] || tool.slice(0,2);
+  icon.style.background = colors[tool] || 'rgba(74,222,128,.15)';
+  icon.style.color = txtc[tool] || '#4ade80';
+
+  const statusTxt = status === 'done' ? '✓ completed' : status === 'active' ? '▶ in progress' : '🔒 locked — complete previous nodes';
+  const statusColor = status === 'done' ? '#4ade80' : status === 'active' ? '#ff9f43' : '#6c7293';
+
+  document.getElementById('dpBody').innerHTML = `
+    <div class="dp-section">
+      <div class="dp-sh">status</div>
+      <div style="font-family:'Fira Code',monospace;font-size:11px;color:${statusColor};padding:8px 12px;background:rgba(255,255,255,.04);border-radius:5px;border:1px solid var(--border)">
+        ${statusTxt}
+      </div>
+    </div>
+    <div class="dp-section">
+      <div class="dp-sh">description</div>
+      <div class="dp-desc">${desc}</div>
+    </div>
+    <div class="dp-section">
+      <div class="dp-sh">topics covered</div>
+      <div class="dp-steps">
+        ${topics.map((t,i) => `<div class="dp-step"><div class="dp-step-num">topic ${String(i+1).padStart(2,'0')}</div><div class="dp-step-name">${t}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="dp-section">
+      <div class="dp-sh">code example</div>
+      <div class="dp-code">${escHtml(code)}</div>
+    </div>
+    <div class="dp-section">
+      <div class="dp-sh">tags</div>
+      <div class="dp-tags">
+        <span class="dp-tag">${tool}</span>
+        <span class="dp-tag">${title}</span>
+        <span class="dp-tag">N8N DSC</span>
+        <span class="dp-tag">hands-on</span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('overlay').classList.add('on');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function closePanel() {
+  document.getElementById('detailPanel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('on');
+}
+
+// scroll reveal
+const obs = new IntersectionObserver(es => es.forEach(e => {
+  if(e.isIntersecting) e.target.classList.add('on');
+}), {threshold:0.05});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
